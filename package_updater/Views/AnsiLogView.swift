@@ -50,7 +50,7 @@ struct AnsiLogView: NSViewRepresentable {
             ofSize: NSFont.smallSystemFontSize,
             weight: .regular
         )
-        let attributed = AnsiParser.attributedString(from: text, font: font)
+        let attributed = AnsiParser.attributedStringForLog(text, font: font)
         textView.textStorage?.setAttributedString(attributed)
 
         if autoScroll {

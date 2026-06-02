@@ -74,4 +74,43 @@ enum AnsiParser {
 
         return result
     }
+
+    /// Colorise les lignes du rapport audit (sans codes ANSI dans le flux).
+    static func attributedStringColoredLogLine(
+        _ line: String,
+        font: NSFont,
+        defaultColor: NSColor = NSColor(white: 0.92, alpha: 1)
+    ) -> NSAttributedString {
+        var color = defaultColor
+        if line.contains("MATRICE_SUPERIEURE") || line.contains(" ABSENT") || line.contains("VENV_ABSENT") {
+            color = .systemRed
+        } else if line.contains("MATRICE_A_RAFRAICHIR") || line.contains("A_CHECKER") || line.contains("A_VERIFIER") {
+            color = .systemYellow
+        } else if line.contains(" SANS_MATRICE") || line.contains(" LIBRE") {
+            color = .systemCyan
+        } else if line.contains("A_JOUR") && line.contains(" OK") {
+            color = .systemGreen
+        } else if line.hasPrefix("[") && line.hasSuffix("]") {
+            color = NSColor(white: 0.75, alpha: 1)
+        }
+        return NSAttributedString(
+            string: line + "\n",
+            attributes: [.font: font, .foregroundColor: color]
+        )
+    }
+
+    static func attributedStringForLog(
+        _ input: String,
+        font: NSFont,
+        defaultColor: NSColor = NSColor(white: 0.92, alpha: 1)
+    ) -> NSAttributedString {
+        if input.contains("\u{1B}[") {
+            return attributedString(from: input, font: font, defaultColor: defaultColor)
+        }
+        let result = NSMutableAttributedString()
+        for line in input.split(separator: "\n", omittingEmptySubsequences: false) {
+            result.append(attributedStringColoredLogLine(String(line), font: font, defaultColor: defaultColor))
+        }
+        return result
+    }
 }

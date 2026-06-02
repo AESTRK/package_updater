@@ -124,10 +124,13 @@ def norm(v):
     v = v.lower().replace("-", ".")
     parts = []
     for token in re.split(r"[._+]", v):
-        if token == "post": parts.append(0); continue
-        m = re.match(r"^(\\d+)", token)
+        if token == "post":
+            parts.append(0)
+            continue
+        m = re.match(r"^(\d+)", token)
         parts.append(int(m.group(1)) if m else 0)
-    while len(parts) < 8: parts.append(0)
+    while len(parts) < 8:
+        parts.append(0)
     return tuple(parts[:8])
 print("UPDATE" if norm(cur) < norm(lat) else "OK")
 PY
@@ -139,7 +142,7 @@ import re, sys
 spec, cur = sys.argv[1].strip(), sys.argv[2].strip()
 if not spec or not cur or cur == "ABSENT":
     print("A_VERIFIER"); raise SystemExit
-m = re.match(r"^([A-Za-z0-9_.\\-]+)\\s*([<>=!~]+)\\s*([A-Za-z0-9_.!\\-+]+)", spec)
+m = re.match(r"^([A-Za-z0-9_.\-]+)\s*([<>=!~]+)\s*([A-Za-z0-9_.!\-+]+)", spec)
 if not m:
     print("LIBRE"); raise SystemExit
 op, tgt = m.group(2), m.group(3)
@@ -147,17 +150,23 @@ def norm(v):
     v = v.lower().replace("-", ".")
     parts = []
     for token in re.split(r"[._+]", v):
-        if token == "post": parts.append(0); continue
-        m2 = re.match(r"^(\\d+)", token)
+        if token == "post":
+            parts.append(0)
+            continue
+        m2 = re.match(r"^(\d+)", token)
         parts.append(int(m2.group(1)) if m2 else 0)
-    while len(parts) < 8: parts.append(0)
+    while len(parts) < 8:
+        parts.append(0)
     return tuple(parts[:8])
 try:
     cv, tv = norm(cur), norm(tgt)
     if op in {">=", "==", "~="}:
-        if cv > tv: print("MATRICE_A_RAFRAICHIR")
-        elif cv == tv: print("OK")
-        else: print("MATRICE_SUPERIEURE")
+        if cv > tv:
+            print("MATRICE_A_RAFRAICHIR")
+        elif cv == tv:
+            print("OK")
+        else:
+            print("MATRICE_SUPERIEURE")
     else:
         print("A_VERIFIER")
 except Exception:
