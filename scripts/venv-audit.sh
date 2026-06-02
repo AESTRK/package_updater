@@ -1,13 +1,15 @@
 #!/bin/bash
-# Audit des .venv vs matrice — rapport coloré + dossier output/.
+# Audit des .venv vs matrice — log horodaté FR (+ audit_matrix_refresh.tsv pour MAJ auto).
 set -u
 set -o pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 PROJECTS_ROOT="${PROJECTS_ROOT:-$HOME/PycharmProjects}"
-LOG_BASE_DIR="${LOG_BASE_DIR:-$HOME/Documents/AlphaLagoon/_logs_XcodeProjects/package_updater/audit}"
-REQUIREMENTS_MATRIX="${REQUIREMENTS_MATRIX:-$SCRIPT_DIR/requirements_matrix.txt}"
+REPO_ROOT="${PACKAGE_UPDATER_ROOT:-$HOME/XcodeProjects/package_updater}"
+LOG_BASE_DIR="${LOG_BASE_DIR:-$HOME/Documents/AlphaLagoon/_logs_XcodeProjects/package_updater}"
+DEFAULT_MATRIX="${REQUIREMENTS_MATRIX:-$REPO_ROOT/package_updater_latest_matrix.txt}"
+REQUIREMENTS_MATRIX="${REQUIREMENTS_MATRIX:-$DEFAULT_MATRIX}"
 
 GREEN=$'\033[32m'
 YELLOW=$'\033[33m'
@@ -17,18 +19,18 @@ BOLD=$'\033[1m'
 RESET=$'\033[0m'
 NC="$RESET"
 
-RUN_TS="$(date +%Y%m%d_%H%M%S)"
-LOG_DIR="${LOG_BASE_DIR}/${RUN_TS}"
-OUTPUT_DIR="${LOG_DIR}/output"
-mkdir -p "$OUTPUT_DIR"
+# Fichier log CLI (tee) : pas de couleurs. App (PACKAGE_UPDATER_LOG_FILE) : couleurs pour l’UI.
+if [[ ! -t 1 && -z "${PACKAGE_UPDATER_LOG_FILE:-}" ]]; then
+  GREEN="" YELLOW="" RED="" CYAN="" BOLD="" RESET="" NC=""
+fi
 
-LOG_FILE="${LOG_DIR}/run.log"
-PACKAGE_CHECK_FILE="${OUTPUT_DIR}/package_check.txt"
-MATRIX_CHECK_FILE="${OUTPUT_DIR}/matrix_check.txt"
-MATRIX_REFRESH_TSV="${OUTPUT_DIR}/matrix_refresh.tsv"
-SUMMARY_FILE="${OUTPUT_DIR}/summary.txt"
-PATHS_FILE="${OUTPUT_DIR}/paths.txt"
-PROJECT_RECORDS="${LOG_DIR}/.project_records.tsv"
+log_stamp_fr() { date +'%d-%m-%Y_%H-%M-%S'; }
+mkdir -p "$LOG_BASE_DIR"
+LOG_FILE="${PACKAGE_UPDATER_LOG_FILE:-$LOG_BASE_DIR/venv_audit_$(log_stamp_fr).log}"
+MATRIX_REFRESH_TSV="${LOG_BASE_DIR}/audit_matrix_refresh.tsv"
+WORK_DIR="$(mktemp -d "${TMPDIR:-/tmp}/pkgupd_audit.XXXX")"
+PROJECT_RECORDS="${WORK_DIR}/project_records.tsv"
+trap 'rm -rf "$WORK_DIR"' EXIT
 
 print_line() { printf '%*s\n' 78 '' | tr ' ' '='; }
 print_section() { echo ""; print_line; echo "$1"; print_line; }
@@ -53,7 +55,7 @@ fi
 
 should_skip_dir() {
   case "$(basename "$1")" in
-    .venv|__pycache__|.git|.idea|_logs|_logs_*) return 0 ;;
+    .venv|__pycache__|.git|.idea|_logs|_logsPycharmProjects|_logs_*) return 0 ;;
     .*) return 0 ;;
   esac
   return 1
@@ -179,7 +181,7 @@ write_matrix_refresh_row() {
   [[ "$matrix_status" != "MATRICE_A_RAFRAICHIR" ]] && return 0
   local suggested="${pkg}>=${current}"
   printf '%s | %s | %s | installé=%s | suggéré=%s\n' \
-    "$project" "$pkg" "$spec" "$current" "$suggested" >>"$MATRIX_CHECK_FILE"
+    "$project" "$pkg" "$spec" "$current" "$suggested"
   printf '%s\t%s\t%s\t%s\t%s\n' \
     "$project" "$pkg" "$spec" "$current" "$suggested" >>"$MATRIX_REFRESH_TSV"
 }
@@ -204,14 +206,14 @@ check_project_package_versions() {
   local venv_python="$project_dir/.venv/bin/python"
   local venv_pip="$project_dir/.venv/bin/pip"
 
-  echo "" | tee -a "$PACKAGE_CHECK_FILE"
-  echo "[$project]" | tee -a "$PACKAGE_CHECK_FILE"
+  echo ""
+  echo "[$project]"
 
   if [[ ! -x "$venv_python" ]]; then
     printf "${RED}%-18s %-18s %-26s %-18s %-14s %-24s${RESET}\n" \
       "Package" "Actuelle" "Cible matrice" "Dernière PyPI" "Statut PyPI" "Statut Matrice"
     printf "${RED}%-18s %-18s %-26s %-18s %-14s %-24s${RESET}\n" \
-      "VENV_ABSENT" "ABSENT" "N/A" "N/A" "ERREUR" "A_VERIFIER" | tee -a "$PACKAGE_CHECK_FILE"
+      "VENV_ABSENT" "ABSENT" "N/A" "N/A" "ERREUR" "A_VERIFIER"
     MATRIX_REFRESH_COUNT=$((MATRIX_REFRESH_COUNT + 0))
     PYPI_UPDATE_COUNT=$((PYPI_UPDATE_COUNT + 0))
     return 0
@@ -219,15 +221,15 @@ check_project_package_versions() {
 
   if [[ ! -s "$requirements_file" ]]; then
     printf "${YELLOW}%-18s %-18s %-26s %-18s %-14s %-24s${RESET}\n" \
-      "AUCUNE_MATRICE" "N/A" "N/A" "N/A" "SANS_MATRICE" "SANS_MATRICE" | tee -a "$PACKAGE_CHECK_FILE"
+      "AUCUNE_MATRICE" "N/A" "N/A" "N/A" "SANS_MATRICE" "SANS_MATRICE"
     NO_MATRIX_COUNT=$((NO_MATRIX_COUNT + 1))
     return 0
   fi
 
   printf "%-18s %-18s %-26s %-18s %-14s %-24s\n" \
-    "Package" "Actuelle" "Cible matrice" "Dernière PyPI" "Statut PyPI" "Statut Matrice" | tee -a "$PACKAGE_CHECK_FILE"
+    "Package" "Actuelle" "Cible matrice" "Dernière PyPI" "Statut PyPI" "Statut Matrice"
   printf "%-18s %-18s %-26s %-18s %-14s %-24s\n" \
-    "------------------" "------------------" "--------------------------" "------------------" "--------------" "------------------------" | tee -a "$PACKAGE_CHECK_FILE"
+    "------------------" "------------------" "--------------------------" "------------------" "--------------" "------------------------"
 
   local spec pkg current latest status matrix_status pypi_label matrix_label color
   while IFS= read -r spec || [[ -n "$spec" ]]; do
@@ -263,7 +265,7 @@ check_project_package_versions() {
     write_matrix_refresh_row "$project" "$pkg" "$spec" "$current" "$matrix_status"
     color="$(pick_row_color "$pypi_label" "$matrix_label")"
     printf "${color}%-18s %-18s %-26s %-18s %-14s %-24s${RESET}\n" \
-      "$pkg" "$current" "$spec" "$latest" "$pypi_label" "$matrix_label" | tee -a "$PACKAGE_CHECK_FILE"
+      "$pkg" "$current" "$spec" "$latest" "$pypi_label" "$matrix_label"
   done <"$requirements_file"
 }
 
@@ -293,21 +295,7 @@ run_audit() {
   echo "Python         : $PYTHON_BIN"
   echo "Projets        : $PROJECTS_ROOT"
   echo "Matrice        : $REQUIREMENTS_MATRIX"
-  echo "Dossier run    : $LOG_DIR"
-  echo "Dossier output : $OUTPUT_DIR"
-
-  {
-    echo "CHECK PACKAGES — $RUN_TS"
-    echo "Matrice : $REQUIREMENTS_MATRIX"
-    echo ""
-  } >"$PACKAGE_CHECK_FILE"
-
-  {
-    echo "CHECK MATRICE — $RUN_TS"
-    echo "Lignes où la version minimale est inférieure à la version installée."
-    echo "Format : projet | package | cible_actuelle | installé | suggéré"
-    echo ""
-  } >"$MATRIX_CHECK_FILE"
+  echo "Log            : $LOG_FILE"
 
   printf 'project\tpackage\told_spec\tinstalled\tsuggested_spec\n' >"$MATRIX_REFRESH_TSV"
 
@@ -316,7 +304,7 @@ run_audit() {
   while IFS= read -r project; do
     [[ -z "$project" ]] && continue
     project_dir="$PROJECTS_ROOT/$project"
-    req_file="${LOG_DIR}/requirements_${project}.txt"
+    req_file="${WORK_DIR}/requirements_${project}.txt"
     generate_project_requirements "$project" "$req_file"
     printf '%s\t%s\t%s\n' "$project" "$project_dir" "$req_file" >>"$PROJECT_RECORDS"
   done < <(discover_projects)
@@ -326,9 +314,6 @@ run_audit() {
   echo "Aucune mise à jour n'est appliquée par ce bloc."
   echo "Statut PyPI    : ${GREEN}A_JOUR${RESET} / ${YELLOW}A_CHECKER${RESET} / ${RED}ABSENT${RESET} / ${YELLOW}A_VERIFIER${RESET}"
   echo "Statut Matrice : ${GREEN}OK${RESET} / ${YELLOW}MATRICE_A_RAFRAICHIR${RESET} / ${RED}MATRICE_SUPERIEURE${RESET} / ${CYAN}LIBRE${RESET}"
-  echo "Rapport        : $PACKAGE_CHECK_FILE"
-  echo "Matrice        : $MATRIX_CHECK_FILE"
-
   while IFS=$'\t' read -r project project_dir req_file; do
     [[ -n "$project" ]] || continue
     check_project_package_versions "$project" "$project_dir" "$req_file"
@@ -338,9 +323,8 @@ run_audit() {
   if [[ "$MATRIX_REFRESH_COUNT" -gt 0 ]]; then
     log_warn "$MATRIX_REFRESH_COUNT ligne(s) : matrice minimale < version installée."
     echo "Édition manuelle : $REQUIREMENTS_MATRIX"
-    echo "Auto             : ./package-updater.sh apply-matrix $LOG_DIR"
+    echo "Auto             : ./update-matrix-auto.sh"
     echo ""
-    cat "$MATRIX_CHECK_FILE"
   else
     log_ok "Aucune cible minimale à rafraîchir."
   fi
@@ -351,35 +335,18 @@ run_audit() {
     echo "Relancer un venv install dans installer si vous souhaitez upgrader les .venv."
   fi
 
-  {
-    echo "Résumé audit — $RUN_TS"
-    echo "Matrice à rafraîchir (MATRICE_A_RAFRAICHIR) : $MATRIX_REFRESH_COUNT"
-    echo "PyPI plus récent (A_CHECKER)                : $PYPI_UPDATE_COUNT"
-    echo "Projets sans entrée matrice                 : $NO_MATRIX_COUNT"
-    echo ""
-    echo "Fichiers :"
-    echo "  package_check.txt  — tableaux par projet"
-    echo "  matrix_check.txt   — suggestions matrice"
-    echo "  matrix_refresh.tsv — import apply-matrix"
-  } >"$SUMMARY_FILE"
-
-  {
-    echo "LOG_DIR=$LOG_DIR"
-    echo "OUTPUT_DIR=$OUTPUT_DIR"
-    echo "PACKAGE_CHECK=$PACKAGE_CHECK_FILE"
-    echo "MATRIX_CHECK=$MATRIX_CHECK_FILE"
-    echo "MATRIX_REFRESH_TSV=$MATRIX_REFRESH_TSV"
-    echo "SUMMARY=$SUMMARY_FILE"
-  } >"$PATHS_FILE"
-
-  ln -sfn "$LOG_DIR" "${LOG_BASE_DIR}/latest" 2>/dev/null || true
-
   print_section "RÉSUMÉ FINAL"
-  cat "$SUMMARY_FILE"
+  echo "Matrice à rafraîchir (MATRICE_A_RAFRAICHIR) : $MATRIX_REFRESH_COUNT"
+  echo "PyPI plus récent (A_CHECKER)                : $PYPI_UPDATE_COUNT"
+  echo "Projets sans entrée matrice                 : $NO_MATRIX_COUNT"
   echo ""
-  log_ok "Audit terminé. Ouvrir : $OUTPUT_DIR"
+  log_ok "Audit terminé. Log : $LOG_FILE"
 }
 
-# stdout → journal app (Process) + run.log sur disque
+if [[ -n "${PACKAGE_UPDATER_LOG_FILE:-}" ]]; then
+  run_audit 2>&1
+  exit $?
+fi
+: >"$LOG_FILE"
 run_audit 2>&1 | tee -a "$LOG_FILE"
 exit "${PIPESTATUS[0]}"

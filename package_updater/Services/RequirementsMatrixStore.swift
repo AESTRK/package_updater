@@ -11,7 +11,7 @@ final class RequirementsMatrixStore: ObservableObject {
     let fileURL: URL
 
     init() {
-        fileURL = UpdaterPaths.requirementsMatrixURL
+        fileURL = UpdaterPaths.ensureMatrixLayout()
         load()
     }
 
@@ -35,8 +35,9 @@ final class RequirementsMatrixStore: ObservableObject {
             let dir = fileURL.deletingLastPathComponent()
             try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
             try text.write(to: fileURL, atomically: true, encoding: .utf8)
+            UpdaterPaths.archiveMatrixSnapshot(from: fileURL)
             isDirty = false
-            statusMessage = "Matrice enregistrée"
+            statusMessage = "Matrice enregistrée (historique → history/)"
             return true
         } catch {
             statusMessage = "Échec enregistrement : \(error.localizedDescription)"

@@ -4,36 +4,17 @@ import SwiftUI
 struct PackageUpdaterView: View {
     @StateObject private var runner = ScriptRunner()
     @StateObject private var matrix = RequirementsMatrixStore()
-    @State private var didShowWelcome = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("AlphaLagoon — Package Updater")
                 .font(.title2.bold())
 
-            Text("Audit → dossier output/ (tableaux colorés). Matrice : édition manuelle ou « Appliquer matrice ».")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-
             HStack(spacing: 8) {
                 actionButton("Venv audit", mode: "audit")
-                actionButton("Appliquer matrice", mode: "audit-apply")
+                actionButton("Mettre à jour matrice (auto)", mode: "audit-apply")
                 actionButton("Sync installateur", mode: "sync-installer", prominent: true)
-                actionButton("Audit + publier", mode: "publish")
             }
-
-            HStack(spacing: 8) {
-                Button("Dossier output (dernier audit)") {
-                    openLatestAuditOutput()
-                }
-                .disabled(runner.isRunning)
-            }
-
-            Text("Cible installateur : \(UpdaterPaths.installerRoot.path)")
-                .font(.caption2)
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
-                .truncationMode(.middle)
 
             matrixToolbar
 
@@ -45,38 +26,14 @@ struct PackageUpdaterView: View {
         }
         .padding()
         .onAppear {
-            guard !didShowWelcome else { return }
-            didShowWelcome = true
-            showWelcomeDiagnostics()
+            runner.setBootstrapMessage("Prêt.\n")
         }
-    }
-
-    private func showWelcomeDiagnostics() {
-        let script = UpdaterPaths.packageUpdaterScript
-        let scriptOK = FileManager.default.fileExists(atPath: script.path)
-        runner.setBootstrapMessage(
-            """
-            Package Updater — prêt
-            Repo      : \(UpdaterPaths.repoRoot.path)
-            Script    : \(script.path) \(scriptOK ? "OK" : "MANQUANT")
-            Matrice   : \(matrix.fileURL.path)
-            Audit out : \(UpdaterPaths.auditLogBase.path)/latest/output/
-
-            Cliquez « Venv audit » pour lancer l'analyse (sortie colorée ci-dessous).
-
-            """
-        )
     }
 
     private var matrixToolbar: some View {
         HStack(spacing: 8) {
-            Text("Matrice (source)")
+            Text("Matrice")
                 .font(.headline)
-            Text(matrix.fileURL.path)
-                .font(.caption2)
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
-                .truncationMode(.middle)
             Spacer()
             Text(matrix.statusMessage)
                 .font(.caption)
@@ -143,16 +100,6 @@ struct PackageUpdaterView: View {
             if mode == "audit-apply", code == 0 {
                 matrix?.load()
             }
-        }
-    }
-
-    private func openLatestAuditOutput() {
-        let latest = UpdaterPaths.auditLogBase
-            .appendingPathComponent("latest/output", isDirectory: true)
-        if FileManager.default.fileExists(atPath: latest.path) {
-            NSWorkspace.shared.open(latest)
-        } else {
-            NSWorkspace.shared.open(UpdaterPaths.auditLogBase)
         }
     }
 

@@ -30,7 +30,7 @@ final class ScriptRunner: ObservableObject {
     }
 
     private func runUpdater(mode: String, requirementsMatrix: URL) {
-        let script = UpdaterPaths.packageUpdaterScript
+        let script = UpdaterPaths.script(forMode: mode)
         guard !isRunning else { return }
 
         guard FileManager.default.fileExists(atPath: script.path) else {
@@ -51,27 +51,26 @@ final class ScriptRunner: ObservableObject {
         statusMessage = "En cours : \(mode)…"
         logText = ""
 
-        let ts = ISO8601DateFormatter().string(from: Date()).replacingOccurrences(of: ":", with: "-")
-        let runDir = UpdaterPaths.logRoot.appendingPathComponent("run_\(ts)", isDirectory: true)
-        try? FileManager.default.createDirectory(at: runDir, withIntermediateDirectories: true)
-        let logURL = runDir.appendingPathComponent("\(mode).log")
-        FileManager.default.createFile(atPath: logURL.path, contents: nil)
+        let runDate = Date()
+        let logURL = UpdaterPaths.logFile(forMode: mode, at: runDate)
+        UpdaterPaths.ensureLogsLayout()
+        try? Data().write(to: logURL)
 
-        append("=== \(mode) ===\n")
-        append("Script: \(script.path)\n")
-        append("Matrice: \(requirementsMatrix.path)\n")
-        append("Installateur: \(UpdaterPaths.installerRoot.path)\n")
-        append("Log fichier: \(logURL.path)\n\n")
+        append("=== \(mode) ===\n\n")
 
         let proc = Process()
         proc.executableURL = URL(fileURLWithPath: "/bin/bash")
-        proc.arguments = [script.path, mode]
+        proc.arguments = [script.path]
         proc.currentDirectoryURL = UpdaterPaths.repoRoot
 
         var env = ProcessInfo.processInfo.environment
         env["PACKAGE_UPDATER_ROOT"] = UpdaterPaths.repoRoot.path
+        env["PACKAGE_UPDATER_LOG_FILE"] = logURL.path
+        env["PACKAGE_UPDATER_LOG_STAMP"] = UpdaterPaths.frenchLogStamp(from: runDate)
         env["INSTALLER_ROOT"] = UpdaterPaths.installerRoot.path
         env["REQUIREMENTS_MATRIX"] = requirementsMatrix.path
+        env["LOG_BASE_DIR"] = UpdaterPaths.runsLogBase.path
+        env["ALPHA_LAGOON_ROOT"] = UpdaterPaths.suiteRoot.path
         env["PYTHONUNBUFFERED"] = "1"
         env["CLICOLOR_FORCE"] = "1"
         env["TERM"] = "xterm-256color"
@@ -113,7 +112,7 @@ final class ScriptRunner: ObservableObject {
             isRunning = false
             statusMessage = "Échec lancement : \(error.localizedDescription)"
             append("\n\(statusMessage)\n")
-            onComplete?( -1)
+            onComplete?(-1)
             onComplete = nil
         }
     }
@@ -143,8 +142,11 @@ final class ScriptRunner: ObservableObject {
         if logText.count > 500_000 {
             logText = String(logText.suffix(400_000))
         }
-        if let data = chunk.data(using: .utf8), let logHandle {
-            try? logHandle.write(contentsOf: data)
+        if let logHandle {
+            let plain = AnsiParser.strippingANSICodes(from: chunk)
+            if let data = plain.data(using: .utf8) {
+                try? logHandle.write(contentsOf: data)
+            }
         }
     }
 }

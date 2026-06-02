@@ -1,38 +1,43 @@
 #!/bin/bash
-# Applique les suggestions MATRICE_A_RAFRAICHIR sur requirements_matrix.txt.
+# Bouton « Mettre à jour matrice (auto) » — audit puis remonte les >= (MATRICE_A_RAFRAICHIR).
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REQUIREMENTS_MATRIX="${REQUIREMENTS_MATRIX:-$SCRIPT_DIR/requirements_matrix.txt}"
+REPO_ROOT="${PACKAGE_UPDATER_ROOT:-$(cd "$SCRIPT_DIR/.." && pwd)}"
+MATRIX_NAME="package_updater_latest_matrix.txt"
+DEFAULT_MATRIX="${REPO_ROOT}/${MATRIX_NAME}"
+REQUIREMENTS_MATRIX="${REQUIREMENTS_MATRIX:-$DEFAULT_MATRIX}"
+LOG_BASE_DIR="${LOG_BASE_DIR:-$HOME/Documents/AlphaLagoon/_logs_XcodeProjects/package_updater}"
+HIST_DIR="${REPO_ROOT}/history"
+TSV="${LOG_BASE_DIR}/audit_matrix_refresh.tsv"
 
-RUN_DIR="${1:-}"
-if [[ -z "$RUN_DIR" ]]; then
-  LATEST="${LOG_BASE_DIR:-$HOME/Documents/AlphaLagoon/_logs_XcodeProjects/package_updater/audit}/latest"
-  if [[ -L "$LATEST" ]]; then
-    RUN_DIR="$(cd "$LATEST" && pwd)"
-  else
-    echo "Usage: $0 <audit_run_dir>"
-    echo "  ou lancer un audit avant (lien audit/latest)."
-    exit 1
-  fi
-fi
+log() { printf '%s\n' "$*"; }
 
-TSV="${RUN_DIR}/output/matrix_refresh.tsv"
+archive_matrix() {
+  local src="${1:-$REQUIREMENTS_MATRIX}"
+  mkdir -p "$HIST_DIR"
+  local ts="$HIST_DIR/$(date +%Y%m%d_%H%M%S)_${MATRIX_NAME}"
+  cp "$src" "$ts"
+  log "Historique : $ts"
+}
+
+log "=== Audit venv ==="
+bash "$SCRIPT_DIR/venv-audit.sh"
+
 if [[ ! -f "$TSV" ]]; then
-  echo "ERREUR: $TSV introuvable. Lancez d'abord un audit."
+  log "ERREUR: $TSV introuvable. L'audit n'a produit aucune suggestion."
   exit 1
 fi
-
 if [[ ! -f "$REQUIREMENTS_MATRIX" ]]; then
-  echo "ERREUR: matrice introuvable: $REQUIREMENTS_MATRIX"
+  log "ERREUR: matrice introuvable: $REQUIREMENTS_MATRIX"
   exit 1
 fi
 
-BACKUP="${REQUIREMENTS_MATRIX}.bak.$(date +%Y%m%d_%H%M%S)"
-cp "$REQUIREMENTS_MATRIX" "$BACKUP"
-echo "Sauvegarde : $BACKUP"
+log ""
+log "=== Mise à jour matrice ==="
+archive_matrix "$REQUIREMENTS_MATRIX"
 
-export REQUIREMENTS_MATRIX TSV BACKUP
+export REQUIREMENTS_MATRIX TSV
 "$(
   command -v python3
 )" <<'PY'
@@ -59,7 +64,6 @@ def norm(v: str):
     return tuple(parts[:8])
 
 
-# package -> max suggested floor (highest installed among MATRICE_A_RAFRAICHIR rows)
 bumps: dict[str, str] = {}
 for line in tsv_path.read_text(encoding="utf-8").splitlines():
     if not line.strip() or line.startswith("project\t"):
@@ -119,5 +123,7 @@ matrix_path.write_text("".join(out), encoding="utf-8")
 print(f"\n{changed} ligne(s) mise(s) à jour dans {matrix_path}")
 PY
 
-echo ""
-echo "Relancez « Mettre à jour l'installateur » puis venv install si besoin."
+archive_matrix "$REQUIREMENTS_MATRIX"
+
+log ""
+log "Relancez « Sync installateur » puis venv install si besoin."

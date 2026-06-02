@@ -2,6 +2,34 @@ import AppKit
 
 /// Convertit une chaîne avec séquences ANSI SGR (couleurs bash) en NSAttributedString.
 enum AnsiParser {
+    /// Retire les séquences ANSI pour fichiers log / éditeur texte.
+    static func strippingANSICodes(from input: String) -> String {
+        guard input.contains("\u{1B}") else { return input }
+        var result = ""
+        var i = input.startIndex
+        while i < input.endIndex {
+            if input[i] == "\u{1B}" {
+                let afterEsc = input.index(after: i)
+                guard afterEsc < input.endIndex, input[afterEsc] == "[" else {
+                    result.append(input[i])
+                    i = input.index(after: i)
+                    continue
+                }
+                var j = input.index(after: afterEsc)
+                while j < input.endIndex, input[j] != "m" {
+                    j = input.index(after: j)
+                }
+                if j < input.endIndex {
+                    i = input.index(after: j)
+                    continue
+                }
+            }
+            result.append(input[i])
+            i = input.index(after: i)
+        }
+        return result
+    }
+
     static func attributedString(
         from input: String,
         font: NSFont,
