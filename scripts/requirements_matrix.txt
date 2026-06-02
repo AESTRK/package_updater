@@ -1,0 +1,24 @@
+# Source de vérité — matrice packages | projets (PycharmProjects)
+# Workflow : éditer ici → Audit → Mettre à jour l'installateur → AlphaLagoon_installer → Venv install
+
+requests>=2.34.2 | algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, algo_order_executor, manual_orders, statics, chartboard, market_microstructure_publisher, market_snapshot_publisher, orders, orderbook, pnl_risk, portfolio, trade_analytics_xxxxxxx, statics_currency
+certifi>=2026.5.20 | algo_order_executor, manual_orders, statics, chartboard, market_microstructure_publisher, market_snapshot_publisher, orders, orderbook, pnl_risk, portfolio, trade_analytics_xxxxxxx
+python-dateutil>=2.9.0.post0 | algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, statics, chartboard, pnl_risk, portfolio
+python-dotenv>=1.2.2 | algo_order_executor, manual_orders, orderbook, pnl_risk, trade_analytics_xxxxxxx
+
+pyzmq>=27.1.0 | algo_ma_crossover_backtest_gui, pnl_risk, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, algo_order_executor, trading_control, manual_orders, statics, chartboard, market_microstructure_publisher, market_snapshot_publisher, orderbook, algo_execution_guard, portfolio, statics_currency, orders
+
+websocket-client>=1.9.0 | algo_execution_guard, algo_ma_crossover_backtest_gui, algo_ma_strategy_runtime, algo_order_executor, manual_orders, market_microstructure_publisher, market_snapshot_publisher, orders, orderbook, trade_analytics_xxxxxxx, portfolio
+websockets>=16.0 | pnl_risk
+aiohttp>=3.13.5 | pnl_risk
+
+numpy>=2.4.6 | algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, chartboard, pnl_risk, portfolio
+pandas>=3.0.3 | algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, chartboard, pnl_risk, portfolio
+matplotlib>=3.10.9 | algo_ma_crossover_backtest_gui, algo_ma_strategy_runtime, algo_ma_stress_test, chartboard, pnl_risk, algo_execution_guard
+
+openpyxl>=3.1.5 | pnl_risk, algo_ma_crossover_backtest_gui
+
+dash>=2.18.2 | trade_analytics_xxxxxxx
+plotly>=6.0.0 | trade_analytics_xxxxxxx
+
+pygame-ce | orders

@@ -1,0 +1,132 @@
+import SwiftUI
+
+struct PackageUpdaterView: View {
+    @StateObject private var runner = ScriptRunner()
+    @StateObject private var matrix = RequirementsMatrixStore()
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("AlphaLagoon — Package Updater")
+                .font(.title2.bold())
+
+            Text("Éditez la matrice, auditez les .venv, puis publiez vers l'installateur. Lancez ensuite Venv install dans AlphaLagoon_installer.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+
+            HStack(spacing: 8) {
+                actionButton("Venv audit", mode: "audit")
+                actionButton("Mettre à jour l'installateur", mode: "sync-installer", prominent: true)
+                actionButton("Audit + publier", mode: "publish")
+            }
+
+            Text("Cible installateur : \(UpdaterPaths.installerRoot.path)")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
+                .truncationMode(.middle)
+
+            matrixToolbar
+
+            HStack(alignment: .top, spacing: 10) {
+                matrixEditor
+                logPanel
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .padding()
+    }
+
+    private var matrixToolbar: some View {
+        HStack(spacing: 8) {
+            Text("Matrice (source)")
+                .font(.headline)
+            Text(matrix.fileURL.path)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
+                .truncationMode(.middle)
+            Spacer()
+            Text(matrix.statusMessage)
+                .font(.caption)
+                .foregroundStyle(matrix.isDirty ? .orange : .secondary)
+            Button("Enregistrer") { saveMatrix() }
+                .disabled(!matrix.isDirty || runner.isRunning)
+            Button("Recharger") { matrix.load() }
+                .disabled(runner.isRunning)
+            Button("Ouvrir…") { matrix.openInDefaultEditor() }
+        }
+    }
+
+    private var matrixEditor: some View {
+        TextEditor(text: Binding(
+            get: { matrix.text },
+            set: { newValue in
+                matrix.text = newValue
+                matrix.textDidChange()
+            }
+        ))
+        .font(.system(.caption, design: .monospaced))
+        .frame(minWidth: 320, maxWidth: .infinity, maxHeight: .infinity)
+        .overlay(RoundedRectangle(cornerRadius: 6).stroke(matrix.isDirty ? Color.orange.opacity(0.6) : Color.secondary.opacity(0.3)))
+    }
+
+    private var logPanel: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack {
+                Text("Journal")
+                    .font(.headline)
+                Spacer()
+                Text(runner.statusMessage)
+                    .font(.caption)
+                    .foregroundStyle(runner.lastExitCode == 0 ? .green : .primary)
+                if runner.isRunning {
+                    Button("Annuler") { runner.cancel() }
+                }
+            }
+
+            TextEditor(text: Binding(
+                get: { runner.logText },
+                set: { _ in }
+            ))
+            .font(.system(.caption, design: .monospaced))
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .overlay(RoundedRectangle(cornerRadius: 6).stroke(.quaternary))
+        }
+        .frame(minWidth: 280, maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    @ViewBuilder
+    private func actionButton(_ title: String, mode: String, prominent: Bool = false) -> some View {
+        let button = Button(title) {
+            runUpdater(mode: mode)
+        }
+        .disabled(runner.isRunning)
+
+        if prominent {
+            button.buttonStyle(.borderedProminent)
+        } else {
+            button.buttonStyle(.bordered)
+        }
+    }
+
+    private func runUpdater(mode: String) {
+        guard saveMatrixIfNeeded() else { return }
+        runner.run(mode: mode, requirementsMatrix: matrix.fileURL)
+    }
+
+    @discardableResult
+    private func saveMatrixIfNeeded() -> Bool {
+        guard matrix.isDirty else { return true }
+        return matrix.save()
+    }
+
+    @discardableResult
+    private func saveMatrix() -> Bool {
+        matrix.save()
+    }
+}
+
+#Preview {
+    PackageUpdaterView()
+        .frame(width: 1100, height: 640)
+}
