@@ -6,7 +6,7 @@ set -o pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 PROJECTS_ROOT="${PROJECTS_ROOT:-$HOME/PycharmProjects}"
-LOG_BASE_DIR="${LOG_BASE_DIR:-$HOME/Documents/AlphaLagoon/_logs/package_audit}"
+LOG_BASE_DIR="${LOG_BASE_DIR:-$HOME/Documents/AlphaLagoon/_logs_XcodeProjects/package_updater/audit}"
 REQUIREMENTS_MATRIX="${REQUIREMENTS_MATRIX:-$SCRIPT_DIR/requirements_matrix.txt}"
 
 GREEN='\033[0;32m'

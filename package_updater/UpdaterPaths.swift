@@ -35,8 +35,12 @@ enum UpdaterPaths {
             .appendingPathComponent("XcodeProjects/installer", isDirectory: true)
     }()
 
-    static var logRoot: URL {
+    static var xcodeProjectsLogRoot: URL {
         URL(fileURLWithPath: NSHomeDirectory())
-            .appendingPathComponent("Documents/AlphaLagoon/_logs/package_updater", isDirectory: true)
+            .appendingPathComponent("Documents/AlphaLagoon/_logs_XcodeProjects", isDirectory: true)
+    }
+
+    static var logRoot: URL {
+        xcodeProjectsLogRoot.appendingPathComponent("package_updater", isDirectory: true)
     }
 }

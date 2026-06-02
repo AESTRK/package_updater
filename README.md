@@ -44,8 +44,10 @@ chmod +x *.sh
 
 ## Logs
 
-- App : `~/Documents/AlphaLagoon/_logs/package_updater/`
-- Audit : `~/Documents/AlphaLagoon/_logs/package_audit/`
+Sous `~/Documents/AlphaLagoon/_logs_XcodeProjects/` :
+
+- App : `package_updater/`
+- Audit venv : `package_updater/audit/`
 
 ## Variables d'environnement
 
