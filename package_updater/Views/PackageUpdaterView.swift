@@ -9,7 +9,7 @@ struct PackageUpdaterView: View {
             Text("AlphaLagoon — Package Updater")
                 .font(.title2.bold())
 
-            Text("Éditez la matrice, auditez les .venv, puis publiez vers l'installateur. Lancez ensuite Venv install dans AlphaLagoon_installer.")
+            Text("Éditez la matrice, auditez les .venv, puis publiez vers l'installateur. Lancez ensuite Venv install dans installer.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
 

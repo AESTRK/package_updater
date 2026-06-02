@@ -1,10 +1,10 @@
 #!/bin/bash
-# Copie la matrice (source de vérité) vers AlphaLagoon_installer.
+# Copie la matrice (source de vérité) vers installer.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-INSTALLER_ROOT="${ALPHA_LAGOON_INSTALLER_ROOT:-$HOME/XcodeProjects/AlphaLagoon_installer}"
+INSTALLER_ROOT="${INSTALLER_ROOT:-$HOME/XcodeProjects/installer}"
 MATRIX_SRC="${REQUIREMENTS_MATRIX:-$SCRIPT_DIR/requirements_matrix.txt}"
 MATRIX_DST="${INSTALLER_ROOT}/scripts/requirements_matrix.txt"
 
@@ -25,4 +25,4 @@ cp "$MATRIX_SRC" "$MATRIX_DST"
 log "Matrice copiée vers:"
 log "  $MATRIX_DST"
 log ""
-log "Lancez AlphaLagoon_installer → Venv install pour appliquer sur les .venv."
+log "Lancez installer → Venv install pour appliquer sur les .venv."

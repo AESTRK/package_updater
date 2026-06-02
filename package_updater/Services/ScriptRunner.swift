@@ -54,7 +54,7 @@ final class ScriptRunner: ObservableObject {
 
         var env = ProcessInfo.processInfo.environment
         env["PACKAGE_UPDATER_ROOT"] = UpdaterPaths.repoRoot.path
-        env["ALPHA_LAGOON_INSTALLER_ROOT"] = UpdaterPaths.installerRoot.path
+        env["INSTALLER_ROOT"] = UpdaterPaths.installerRoot.path
         env["REQUIREMENTS_MATRIX"] = requirementsMatrix.path
         proc.environment = env
 

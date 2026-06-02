@@ -27,12 +27,12 @@ enum UpdaterPaths {
     }
 
     static var installerRoot: URL = {
-        let env = ProcessInfo.processInfo.environment["ALPHA_LAGOON_INSTALLER_ROOT"]
+        let env = ProcessInfo.processInfo.environment["INSTALLER_ROOT"]
         if let env, !env.isEmpty {
             return URL(fileURLWithPath: (env as NSString).expandingTildeInPath, isDirectory: true)
         }
         return URL(fileURLWithPath: NSHomeDirectory())
-            .appendingPathComponent("XcodeProjects/AlphaLagoon_installer", isDirectory: true)
+            .appendingPathComponent("XcodeProjects/installer", isDirectory: true)
     }()
 
     static var logRoot: URL {

@@ -1,5 +1,5 @@
 # Source de vérité — matrice packages | projets (PycharmProjects)
-# Workflow : éditer ici → Audit → Mettre à jour l'installateur → AlphaLagoon_installer → Venv install
+# Workflow : éditer ici → Audit → Mettre à jour l'installateur → installer → Venv install
 
 requests>=2.34.2 | algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, algo_order_executor, manual_orders, statics, chartboard, market_microstructure_publisher, market_snapshot_publisher, orders, orderbook, pnl_risk, portfolio, trade_analytics_xxxxxxx, statics_currency
 certifi>=2026.5.20 | algo_order_executor, manual_orders, statics, chartboard, market_microstructure_publisher, market_snapshot_publisher, orders, orderbook, pnl_risk, portfolio, trade_analytics_xxxxxxx
