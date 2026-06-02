@@ -116,10 +116,11 @@ enum UpdaterPaths {
         }
     }
 
-    static func logFile(forMode mode: String, at date: Date = Date()) -> URL {
+    static func logFile(forMode mode: String, at date: Date = Date(), pid: Int32? = nil) -> URL {
         let stamp = frenchLogStamp(from: date)
         let base = logBaseName(forMode: mode)
-        return runsLogBase.appendingPathComponent("\(base)_\(stamp).log")
+        let processId = pid ?? ProcessInfo.processInfo.processIdentifier
+        return runsLogBase.appendingPathComponent("\(base)_\(stamp)_pid\(processId).log")
     }
 
     static func ensureLogsLayout() {

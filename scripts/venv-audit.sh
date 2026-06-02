@@ -25,8 +25,9 @@ if [[ ! -t 1 && -z "${PACKAGE_UPDATER_LOG_FILE:-}" ]]; then
 fi
 
 log_stamp_fr() { date +'%d-%m-%Y_%H-%M-%S'; }
+LOG_PID="${PACKAGE_UPDATER_LOG_PID:-$$}"
 mkdir -p "$LOG_BASE_DIR"
-LOG_FILE="${PACKAGE_UPDATER_LOG_FILE:-$LOG_BASE_DIR/venv_audit_$(log_stamp_fr).log}"
+LOG_FILE="${PACKAGE_UPDATER_LOG_FILE:-$LOG_BASE_DIR/venv_audit_$(log_stamp_fr)_pid${LOG_PID}.log}"
 MATRIX_REFRESH_TSV="${LOG_BASE_DIR}/audit_matrix_refresh.tsv"
 WORK_DIR="$(mktemp -d "${TMPDIR:-/tmp}/pkgupd_audit.XXXX")"
 PROJECT_RECORDS="${WORK_DIR}/project_records.tsv"

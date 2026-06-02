@@ -67,6 +67,7 @@ final class ScriptRunner: ObservableObject {
         env["PACKAGE_UPDATER_ROOT"] = UpdaterPaths.repoRoot.path
         env["PACKAGE_UPDATER_LOG_FILE"] = logURL.path
         env["PACKAGE_UPDATER_LOG_STAMP"] = UpdaterPaths.frenchLogStamp(from: runDate)
+        env["PACKAGE_UPDATER_LOG_PID"] = String(ProcessInfo.processInfo.processIdentifier)
         env["INSTALLER_ROOT"] = UpdaterPaths.installerRoot.path
         env["REQUIREMENTS_MATRIX"] = requirementsMatrix.path
         env["LOG_BASE_DIR"] = UpdaterPaths.runsLogBase.path

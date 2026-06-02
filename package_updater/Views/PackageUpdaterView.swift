@@ -2,8 +2,8 @@ import AppKit
 import SwiftUI
 
 struct PackageUpdaterView: View {
-    @StateObject private var runner = ScriptRunner()
-    @StateObject private var matrix = RequirementsMatrixStore()
+    @EnvironmentObject private var runner: ScriptRunner
+    @EnvironmentObject private var matrix: RequirementsMatrixStore
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -95,27 +95,18 @@ struct PackageUpdaterView: View {
     }
 
     private func runUpdater(mode: String) {
-        guard saveMatrixIfNeeded() else { return }
-        runner.run(mode: mode, requirementsMatrix: matrix.fileURL) { [weak matrix] code in
-            if mode == "audit-apply", code == 0 {
-                matrix?.load()
-            }
-        }
-    }
-
-    @discardableResult
-    private func saveMatrixIfNeeded() -> Bool {
-        guard matrix.isDirty else { return true }
-        return matrix.save()
+        PackageUpdaterActions.runUpdater(mode: mode, runner: runner, matrix: matrix)
     }
 
     @discardableResult
     private func saveMatrix() -> Bool {
-        matrix.save()
+        PackageUpdaterActions.saveMatrix(matrix)
     }
 }
 
 #Preview {
     PackageUpdaterView()
+        .environmentObject(ScriptRunner())
+        .environmentObject(RequirementsMatrixStore())
         .frame(width: 1100, height: 640)
 }
