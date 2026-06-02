@@ -73,6 +73,8 @@ final class ScriptRunner: ObservableObject {
         env["INSTALLER_ROOT"] = UpdaterPaths.installerRoot.path
         env["REQUIREMENTS_MATRIX"] = requirementsMatrix.path
         env["PYTHONUNBUFFERED"] = "1"
+        env["CLICOLOR_FORCE"] = "1"
+        env["TERM"] = "xterm-256color"
         if env["PATH"] == nil || env["PATH"]?.contains("/opt/homebrew/bin") == false {
             env["PATH"] = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
                 + (env["PATH"].map { ":\($0)" } ?? "")

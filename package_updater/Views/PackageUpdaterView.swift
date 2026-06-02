@@ -116,13 +116,9 @@ struct PackageUpdaterView: View {
                 }
             }
 
-            TextEditor(text: Binding(
-                get: { runner.logText },
-                set: { _ in }
-            ))
-            .font(.system(.caption, design: .monospaced))
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .overlay(RoundedRectangle(cornerRadius: 6).stroke(.quaternary))
+            AnsiLogView(text: runner.logText, autoScroll: runner.isRunning)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .overlay(RoundedRectangle(cornerRadius: 6).stroke(Color.white.opacity(0.15)))
         }
         .frame(minWidth: 280, maxWidth: .infinity, maxHeight: .infinity)
     }
