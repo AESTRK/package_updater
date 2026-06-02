@@ -22,9 +22,10 @@ open ~/XcodeProjects/package_updater/package_updater.xcodeproj
 
 | Bouton | Action |
 |--------|--------|
-| **Venv audit** | Compare versions installées vs matrice |
-| **Mettre à jour l'installateur** | Copie `requirements_matrix.txt` → `installer/scripts/` |
-| **Audit + publier** | Audit puis sync |
+| **Venv audit** | Tableaux colorés par projet → `audit/<run>/output/` |
+| **Appliquer matrice** | Audit puis bump auto des `>=` (MATRICE_A_RAFRAICHIR) |
+| **Sync installateur** | Copie la matrice → `installer/scripts/` |
+| **Audit + publier** | Audit + sync installateur |
 
 ## Workflow recommandé
 
@@ -44,10 +45,15 @@ chmod +x *.sh
 
 ## Logs
 
-Sous `~/Documents/AlphaLagoon/_logs_XcodeProjects/` :
+Sous `~/Documents/AlphaLagoon/_logs_XcodeProjects/package_updater/` :
 
-- App : `package_updater/`
-- Audit venv : `package_updater/audit/`
+- App : `run_*/`
+- Audit : `audit/<timestamp>/output/`
+  - `package_check.txt` — tableaux par projet (comme l’ancien Raccourci)
+  - `matrix_check.txt` — lignes à rafraîchir dans la matrice
+  - `matrix_refresh.tsv` — entrées pour `apply-matrix`
+  - `summary.txt`, `paths.txt`
+- Lien : `audit/latest` → dernier run
 
 ## Variables d'environnement
 

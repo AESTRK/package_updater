@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 struct PackageUpdaterView: View {
@@ -9,14 +10,22 @@ struct PackageUpdaterView: View {
             Text("AlphaLagoon — Package Updater")
                 .font(.title2.bold())
 
-            Text("Éditez la matrice, auditez les .venv, puis publiez vers l'installateur. Lancez ensuite Venv install dans installer.")
+            Text("Audit → dossier output/ (tableaux colorés). Matrice : édition manuelle ou « Appliquer matrice ».")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
 
             HStack(spacing: 8) {
                 actionButton("Venv audit", mode: "audit")
-                actionButton("Mettre à jour l'installateur", mode: "sync-installer", prominent: true)
+                actionButton("Appliquer matrice", mode: "audit-apply")
+                actionButton("Sync installateur", mode: "sync-installer", prominent: true)
                 actionButton("Audit + publier", mode: "publish")
+            }
+
+            HStack(spacing: 8) {
+                Button("Dossier output (dernier audit)") {
+                    openLatestAuditOutput()
+                }
+                .disabled(runner.isRunning)
             }
 
             Text("Cible installateur : \(UpdaterPaths.installerRoot.path)")
@@ -111,7 +120,21 @@ struct PackageUpdaterView: View {
 
     private func runUpdater(mode: String) {
         guard saveMatrixIfNeeded() else { return }
-        runner.run(mode: mode, requirementsMatrix: matrix.fileURL)
+        runner.run(mode: mode, requirementsMatrix: matrix.fileURL) { [weak matrix] code in
+            if mode == "audit-apply", code == 0 {
+                matrix?.load()
+            }
+        }
+    }
+
+    private func openLatestAuditOutput() {
+        let latest = UpdaterPaths.auditLogBase
+            .appendingPathComponent("latest/output", isDirectory: true)
+        if FileManager.default.fileExists(atPath: latest.path) {
+            NSWorkspace.shared.open(latest)
+        } else {
+            NSWorkspace.shared.open(UpdaterPaths.auditLogBase)
+        }
     }
 
     @discardableResult

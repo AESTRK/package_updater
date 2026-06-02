@@ -11,8 +11,10 @@ final class ScriptRunner: ObservableObject {
     private var process: Process?
     private var outputPipe: Pipe?
     private var logHandle: FileHandle?
+    private var onComplete: ((Int32) -> Void)?
 
-    func run(mode: String, requirementsMatrix: URL? = nil) {
+    func run(mode: String, requirementsMatrix: URL? = nil, onComplete: ((Int32) -> Void)? = nil) {
+        self.onComplete = onComplete
         let matrixURL = requirementsMatrix ?? UpdaterPaths.requirementsMatrixURL
         runUpdater(mode: mode, requirementsMatrix: matrixURL)
     }
@@ -102,6 +104,8 @@ final class ScriptRunner: ObservableObject {
         lastExitCode = exitCode
         statusMessage = exitCode == 0 ? "Terminé (OK)" : "Terminé (code \(exitCode))"
         append("\n--- \(statusMessage) ---\n")
+        onComplete?(exitCode)
+        onComplete = nil
     }
 
     private func append(_ chunk: String) {

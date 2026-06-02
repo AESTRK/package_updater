@@ -43,4 +43,8 @@ enum UpdaterPaths {
     static var logRoot: URL {
         xcodeProjectsLogRoot.appendingPathComponent("package_updater", isDirectory: true)
     }
+
+    static var auditLogBase: URL {
+        xcodeProjectsLogRoot.appendingPathComponent("package_updater/audit", isDirectory: true)
+    }
 }
