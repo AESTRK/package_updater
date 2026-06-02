@@ -4,6 +4,7 @@ import SwiftUI
 struct PackageUpdaterView: View {
     @StateObject private var runner = ScriptRunner()
     @StateObject private var matrix = RequirementsMatrixStore()
+    @State private var didShowWelcome = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -43,6 +44,28 @@ struct PackageUpdaterView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .padding()
+        .onAppear {
+            guard !didShowWelcome else { return }
+            didShowWelcome = true
+            showWelcomeDiagnostics()
+        }
+    }
+
+    private func showWelcomeDiagnostics() {
+        let script = UpdaterPaths.packageUpdaterScript
+        let scriptOK = FileManager.default.fileExists(atPath: script.path)
+        runner.setBootstrapMessage(
+            """
+            Package Updater — prêt
+            Repo      : \(UpdaterPaths.repoRoot.path)
+            Script    : \(script.path) \(scriptOK ? "OK" : "MANQUANT")
+            Matrice   : \(matrix.fileURL.path)
+            Audit out : \(UpdaterPaths.auditLogBase.path)/latest/output/
+
+            Cliquez « Venv audit » pour lancer l'analyse (sortie colorée ci-dessous).
+
+            """
+        )
     }
 
     private var matrixToolbar: some View {

@@ -30,8 +30,6 @@ SUMMARY_FILE="${OUTPUT_DIR}/summary.txt"
 PATHS_FILE="${OUTPUT_DIR}/paths.txt"
 PROJECT_RECORDS="${LOG_DIR}/.project_records.tsv"
 
-exec > >(tee -a "$LOG_FILE") 2>&1
-
 print_line() { printf '%*s\n' 78 '' | tr ' ' '='; }
 print_section() { echo ""; print_line; echo "$1"; print_line; }
 
@@ -275,7 +273,7 @@ MATRIX_REFRESH_COUNT=0
 PYPI_UPDATE_COUNT=0
 NO_MATRIX_COUNT=0
 
-main() {
+run_audit() {
   if [[ ! -f "$REQUIREMENTS_MATRIX" ]]; then
     log_err "Matrice introuvable: $REQUIREMENTS_MATRIX"
     exit 1
@@ -373,4 +371,6 @@ main() {
   log_ok "Audit terminé. Ouvrir : $OUTPUT_DIR"
 }
 
-main "$@"
+# stdout → journal app (Process) + run.log sur disque
+run_audit 2>&1 | tee -a "$LOG_FILE"
+exit "${PIPESTATUS[0]}"

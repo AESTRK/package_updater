@@ -24,12 +24,25 @@ final class ScriptRunner: ObservableObject {
         statusMessage = "Annulé"
     }
 
+    func setBootstrapMessage(_ message: String) {
+        logText = message
+        statusMessage = "Prêt"
+    }
+
     private func runUpdater(mode: String, requirementsMatrix: URL) {
         let script = UpdaterPaths.packageUpdaterScript
         guard !isRunning else { return }
-        guard FileManager.default.isExecutableFile(atPath: script.path) else {
-            statusMessage = "Script introuvable : \(script.path)"
-            append("ERREUR: \(statusMessage)\n")
+
+        guard FileManager.default.fileExists(atPath: script.path) else {
+            statusMessage = "Script introuvable"
+            append(
+                """
+                ERREUR: script absent
+                Chemin attendu: \(script.path)
+                Repo: \(UpdaterPaths.repoRoot.path)
+
+                """
+            )
             return
         }
 
@@ -43,6 +56,7 @@ final class ScriptRunner: ObservableObject {
         try? FileManager.default.createDirectory(at: runDir, withIntermediateDirectories: true)
         let logURL = runDir.appendingPathComponent("\(mode).log")
         FileManager.default.createFile(atPath: logURL.path, contents: nil)
+
         append("=== \(mode) ===\n")
         append("Script: \(script.path)\n")
         append("Matrice: \(requirementsMatrix.path)\n")
@@ -58,6 +72,11 @@ final class ScriptRunner: ObservableObject {
         env["PACKAGE_UPDATER_ROOT"] = UpdaterPaths.repoRoot.path
         env["INSTALLER_ROOT"] = UpdaterPaths.installerRoot.path
         env["REQUIREMENTS_MATRIX"] = requirementsMatrix.path
+        env["PYTHONUNBUFFERED"] = "1"
+        if env["PATH"] == nil || env["PATH"]?.contains("/opt/homebrew/bin") == false {
+            env["PATH"] = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+                + (env["PATH"].map { ":\($0)" } ?? "")
+        }
         proc.environment = env
 
         let pipe = Pipe()
@@ -69,7 +88,8 @@ final class ScriptRunner: ObservableObject {
             logHandle = handle
         }
 
-        pipe.fileHandleForReading.readabilityHandler = { [weak self] fh in
+        let outHandle = pipe.fileHandleForReading
+        outHandle.readabilityHandler = { [weak self] fh in
             let data = fh.availableData
             guard !data.isEmpty, let chunk = String(data: data, encoding: .utf8) else { return }
             DispatchQueue.main.async { [weak self] in
@@ -80,7 +100,7 @@ final class ScriptRunner: ObservableObject {
         proc.terminationHandler = { [weak self] p in
             let code = p.terminationStatus
             DispatchQueue.main.async { [weak self] in
-                self?.pipeFinished(exitCode: code)
+                self?.pipeFinished(exitCode: code, pipe: pipe)
             }
         }
 
@@ -91,12 +111,20 @@ final class ScriptRunner: ObservableObject {
             isRunning = false
             statusMessage = "Échec lancement : \(error.localizedDescription)"
             append("\n\(statusMessage)\n")
+            onComplete?( -1)
+            onComplete = nil
         }
     }
 
-    private func pipeFinished(exitCode: Int32) {
+    private func pipeFinished(exitCode: Int32, pipe: Pipe) {
         outputPipe?.fileHandleForReading.readabilityHandler = nil
         outputPipe = nil
+
+        let remaining = pipe.fileHandleForReading.readDataToEndOfFile()
+        if !remaining.isEmpty, let chunk = String(data: remaining, encoding: .utf8) {
+            append(chunk)
+        }
+
         logHandle?.closeFile()
         logHandle = nil
         process = nil
