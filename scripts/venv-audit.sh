@@ -56,7 +56,7 @@ fi
 
 should_skip_dir() {
   case "$(basename "$1")" in
-    .venv|__pycache__|.git|.idea|_logs|_logsPycharmProjects|_logs_*) return 0 ;;
+    .venv|__pycache__|.git|.idea) return 0 ;;
     .*) return 0 ;;
   esac
   return 1
