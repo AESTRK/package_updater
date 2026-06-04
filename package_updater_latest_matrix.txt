@@ -2,31 +2,30 @@
 # Input → Venv audit → Mettre à jour matrice (auto) → Sync installateur → Venv install
 # chartboard_rust / orderbook_rust : apps Rust (Cargo), pas de venv Python — hors matrice.
 
-requests>=2.34.2 | algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, algo_order_executor, manual_orders, statics, market_microstructure_publisher, market_snapshot_publisher, orders, pnl_risk, portfolio, trade_analytics_xxxxxxx, statics_currency
+requests>=2.34.2 | algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, algo_order_executor, manual_orders, statics, market_microstructure_publisher, market_snapshot_publisher, orders, pnl_risk, portfolio, statics_currency, crypto_vol_corr
 
-certifi>=2026.5.20 | algo_order_executor, manual_orders, statics, market_microstructure_publisher, market_snapshot_publisher, orders, pnl_risk, portfolio, trade_analytics_xxxxxxx
+certifi>=2026.5.20 | algo_order_executor, manual_orders, statics, market_microstructure_publisher, market_snapshot_publisher, orders, pnl_risk, portfolio
 
 python-dateutil>=2.9.0.post0 | algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, statics, pnl_risk, portfolio
 
-python-dotenv>=1.2.2 | algo_order_executor, manual_orders, pnl_risk, trade_analytics_xxxxxxx
+python-dotenv>=1.2.2 | algo_order_executor, manual_orders, pnl_risk
 
 pyzmq>=27.1.0 | algo_ma_crossover_backtest_gui, pnl_risk, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, algo_order_executor, trading_control, manual_orders, statics, market_microstructure_publisher, market_snapshot_publisher, algo_execution_guard, portfolio, statics_currency, orders
 
-websocket-client>=1.9.0 | algo_execution_guard, algo_ma_crossover_backtest_gui, algo_ma_strategy_runtime, algo_order_executor, manual_orders, market_microstructure_publisher, market_snapshot_publisher, orders, portfolio, pnl_risk, trade_analytics_xxxxxxx
+websocket-client>=1.9.0 | algo_execution_guard, algo_ma_crossover_backtest_gui, algo_ma_strategy_runtime, algo_order_executor, manual_orders, market_microstructure_publisher, market_snapshot_publisher, orders, portfolio, pnl_risk
 
 websockets>=16.0 | pnl_risk
 
 aiohttp>=3.14.0 | pnl_risk
 
-numpy>=2.4.6 | algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, pnl_risk, portfolio
+numpy>=2.4.6 | algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, pnl_risk, portfolio, crypto_vol_corr
 
-pandas>=3.0.3 | algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, pnl_risk, portfolio
+pandas>=3.0.3 | algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, pnl_risk, portfolio, crypto_vol_corr
 
-matplotlib>=3.10.9 | algo_ma_crossover_backtest_gui, algo_ma_strategy_runtime, algo_ma_stress_test, pnl_risk, algo_execution_guard
+matplotlib>=3.10.9 | algo_ma_crossover_backtest_gui, algo_ma_strategy_runtime, algo_ma_stress_test, pnl_risk, algo_execution_guard, crypto_vol_corr
 
-openpyxl>=3.1.5 | pnl_risk, algo_ma_crossover_backtest_gui
-
-dash>=2.18.2 | trade_analytics_xxxxxxx
-plotly>=6.0.0 | trade_analytics_xxxxxxx
+openpyxl>=3.1.5 | pnl_risk, algo_ma_crossover_backtest_gui, crypto_vol_corr
 
 pygame-ce | orders
+
+scipy>=1.11.0 | crypto_vol_corr
