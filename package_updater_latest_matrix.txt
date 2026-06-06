@@ -1,6 +1,6 @@
 # Matrice packages | projets — source de vérité (Package Updater)
 # Input → Venv audit → Mettre à jour matrice (auto) → Sync installateur → Venv install
-# chartboard_rust / orderbook_rust : apps Rust (Cargo), pas de venv Python — hors matrice.
+# ws_health_hub / chartboard_rust / orderbook_rust : apps Rust (Cargo), pas de venv Python — hors matrice.
 
 requests>=2.34.2 | algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, algo_order_executor, manual_orders, statics, market_microstructure_publisher, market_snapshot_publisher, orders, pnl_risk, portfolio, statics_currency, crypto_vol_corr
 
