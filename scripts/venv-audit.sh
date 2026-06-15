@@ -340,6 +340,9 @@ run_audit() {
   echo "Matrice à rafraîchir (MATRICE_A_RAFRAICHIR) : $MATRIX_REFRESH_COUNT"
   echo "PyPI plus récent (A_CHECKER)                : $PYPI_UPDATE_COUNT"
   echo "Projets sans entrée matrice                 : $NO_MATRIX_COUNT"
+  if [[ "$NO_MATRIX_COUNT" -gt 0 ]]; then
+    echo "Nouveaux projets                            : utiliser « Rattacher nouveaux projets » dans l'app"
+  fi
   echo ""
   log_ok "Audit terminé. Log : $LOG_FILE"
 }

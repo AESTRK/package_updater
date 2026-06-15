@@ -57,6 +57,14 @@ enum UpdaterPaths {
         scriptsDirectory.appendingPathComponent("sync-installer.sh")
     }
 
+    static var discoverProjectAttachmentsScript: URL {
+        scriptsDirectory.appendingPathComponent("discover-project-attachments.sh")
+    }
+
+    static var applyProjectAttachmentsScript: URL {
+        scriptsDirectory.appendingPathComponent("apply-project-attachments.sh")
+    }
+
     static func script(forMode mode: String) -> URL {
         switch mode {
         case "audit":
@@ -65,6 +73,8 @@ enum UpdaterPaths {
             return updateMatrixAutoScript
         case "sync-installer":
             return syncInstallerScript
+        case "apply-attachments":
+            return applyProjectAttachmentsScript
         default:
             return venvAuditScript
         }
@@ -94,6 +104,10 @@ enum UpdaterPaths {
         runsLogBase.appendingPathComponent("audit_matrix_refresh.tsv")
     }
 
+    static var auditMatrixAttachTSV: URL {
+        runsLogBase.appendingPathComponent("audit_matrix_attach.tsv")
+    }
+
     /// Horodatage pour noms de fichiers : `02-06-2026_16-49-30` (fuseau local, format FR).
     static func frenchLogStamp(from date: Date = Date()) -> String {
         let formatter = DateFormatter()
@@ -111,6 +125,8 @@ enum UpdaterPaths {
             return "maj_matrice"
         case "sync-installer":
             return "sync_installer"
+        case "apply-attachments":
+            return "rattache_projets"
         default:
             return mode.replacingOccurrences(of: "-", with: "_")
         }

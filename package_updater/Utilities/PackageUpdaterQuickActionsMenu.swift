@@ -9,6 +9,10 @@ enum PackageUpdaterQuickActionsMenu {
         Section {
             scriptButton("Venv audit", mode: "audit", runner: runner, matrix: matrix)
             scriptButton("Mettre à jour matrice (auto)", mode: "audit-apply", runner: runner, matrix: matrix)
+            Button("Rattacher nouveaux projets…") {
+                PackageUpdaterActions.attachNewProjects(runner: runner, matrix: matrix)
+            }
+            .disabled(runner.isRunning)
             scriptButton("Sync installateur", mode: "sync-installer", runner: runner, matrix: matrix)
 
             if runner.isRunning {
@@ -45,6 +49,7 @@ enum PackageUpdaterQuickActionsMenu {
 
         menu.addItem(item("Venv audit", action: #selector(PackageUpdaterAppDelegate.dockRunAudit), target: delegate, enabled: !running))
         menu.addItem(item("Mettre à jour matrice (auto)", action: #selector(PackageUpdaterAppDelegate.dockRunAuditApply), target: delegate, enabled: !running))
+        menu.addItem(item("Rattacher nouveaux projets…", action: #selector(PackageUpdaterAppDelegate.dockAttachNewProjects), target: delegate, enabled: !running))
         menu.addItem(item("Sync installateur", action: #selector(PackageUpdaterAppDelegate.dockRunSyncInstaller), target: delegate, enabled: !running))
         if running {
             menu.addItem(item("Annuler", action: #selector(PackageUpdaterAppDelegate.dockCancelRun), target: delegate))

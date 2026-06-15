@@ -13,10 +13,15 @@ final class ScriptRunner: ObservableObject {
     private var logHandle: FileHandle?
     private var onComplete: ((Int32) -> Void)?
 
-    func run(mode: String, requirementsMatrix: URL? = nil, onComplete: ((Int32) -> Void)? = nil) {
+    func run(
+        mode: String,
+        requirementsMatrix: URL? = nil,
+        extraEnvironment: [String: String] = [:],
+        onComplete: ((Int32) -> Void)? = nil
+    ) {
         self.onComplete = onComplete
         let matrixURL = requirementsMatrix ?? UpdaterPaths.requirementsMatrixURL
-        runUpdater(mode: mode, requirementsMatrix: matrixURL)
+        runUpdater(mode: mode, requirementsMatrix: matrixURL, extraEnvironment: extraEnvironment)
     }
 
     func cancel() {
@@ -29,7 +34,23 @@ final class ScriptRunner: ObservableObject {
         statusMessage = "Prêt"
     }
 
-    private func runUpdater(mode: String, requirementsMatrix: URL) {
+    func beginManualOperation(title: String) {
+        logText = "=== \(title) ===\n\n"
+        statusMessage = title
+        lastExitCode = nil
+    }
+
+    func appendToLog(_ chunk: String) {
+        append(chunk)
+    }
+
+    func endManualOperation(exitCode: Int32, successMessage: String, failurePrefix: String) {
+        lastExitCode = exitCode
+        statusMessage = exitCode == 0 ? successMessage : "\(failurePrefix) (code \(exitCode))"
+        append("\n--- \(statusMessage) ---\n")
+    }
+
+    private func runUpdater(mode: String, requirementsMatrix: URL, extraEnvironment: [String: String] = [:]) {
         let script = UpdaterPaths.script(forMode: mode)
         guard !isRunning else { return }
 
@@ -75,6 +96,9 @@ final class ScriptRunner: ObservableObject {
         env["PYTHONUNBUFFERED"] = "1"
         env["CLICOLOR_FORCE"] = "1"
         env["TERM"] = "xterm-256color"
+        for (key, value) in extraEnvironment {
+            env[key] = value
+        }
         if env["PATH"] == nil || env["PATH"]?.contains("/opt/homebrew/bin") == false {
             env["PATH"] = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
                 + (env["PATH"].map { ":\($0)" } ?? "")

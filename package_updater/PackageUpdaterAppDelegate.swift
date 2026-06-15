@@ -21,6 +21,12 @@ final class PackageUpdaterAppDelegate: NSObject, NSApplicationDelegate {
         PackageUpdaterActions.runUpdater(mode: "audit-apply", runner: runner, matrix: matrix)
     }
 
+    @objc func dockAttachNewProjects() {
+        guard let runner = PackageUpdaterAppServices.runner,
+              let matrix = PackageUpdaterAppServices.matrix else { return }
+        PackageUpdaterActions.attachNewProjects(runner: runner, matrix: matrix)
+    }
+
     @objc func dockRunSyncInstaller() {
         guard let runner = PackageUpdaterAppServices.runner,
               let matrix = PackageUpdaterAppServices.matrix else { return }

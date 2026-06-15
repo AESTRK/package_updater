@@ -4,6 +4,9 @@
 |--------|--------|-----|
 | Venv audit | `scripts/venv-audit.sh` | `venv_audit_jj-MM-aaaa_HH-mm-ss_pid{N}.log` |
 | Mettre à jour matrice (auto) | `scripts/update-matrix-auto.sh` | `maj_matrice_jj-MM-aaaa_HH-mm-ss_pid{N}.log` |
+| Rattacher nouveaux projets | `scripts/discover-project-attachments.sh` + `scripts/apply-project-attachments.sh` | `rattache_projets_jj-MM-aaaa_HH-mm-ss_pid{N}.log` |
+
+La mise à jour auto remonte uniquement les versions minimales. Les nouvelles applis sont proposées via **Rattacher nouveaux projets** (confirmation Oui/Non par projet dans l'app).
 | Sync installateur | `scripts/sync-installer.sh` | `sync_installer_jj-MM-aaaa_HH-mm-ss_pid{N}.log` |
 
 Matrice : `package_updater_latest_matrix.txt` (racine du projet)  

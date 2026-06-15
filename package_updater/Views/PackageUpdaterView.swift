@@ -13,6 +13,7 @@ struct PackageUpdaterView: View {
             HStack(spacing: 8) {
                 actionButton("Venv audit", mode: "audit")
                 actionButton("Mettre à jour matrice (auto)", mode: "audit-apply")
+                attachProjectsButton
                 actionButton("Sync installateur", mode: "sync-installer", prominent: true)
             }
 
@@ -78,6 +79,15 @@ struct PackageUpdaterView: View {
                 .overlay(RoundedRectangle(cornerRadius: 6).stroke(Color.white.opacity(0.15)))
         }
         .frame(minWidth: 280, maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    @ViewBuilder
+    private var attachProjectsButton: some View {
+        Button("Rattacher nouveaux projets…") {
+            PackageUpdaterActions.attachNewProjects(runner: runner, matrix: matrix)
+        }
+        .buttonStyle(.bordered)
+        .disabled(runner.isRunning)
     }
 
     @ViewBuilder
