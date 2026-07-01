@@ -213,8 +213,15 @@ check_project_package_versions() {
   if [[ ! -x "$venv_python" ]]; then
     printf "${RED}%-18s %-18s %-26s %-18s %-14s %-24s${RESET}\n" \
       "Package" "Actuelle" "Cible matrice" "Dernière PyPI" "Statut PyPI" "Statut Matrice"
-    printf "${RED}%-18s %-18s %-26s %-18s %-14s %-24s${RESET}\n" \
-      "VENV_ABSENT" "ABSENT" "N/A" "N/A" "ERREUR" "A_VERIFIER"
+    if [[ -s "$requirements_file" ]]; then
+      printf "${YELLOW}%-18s %-18s %-26s %-18s %-14s %-24s${RESET}\n" \
+        "VENV_ABSENT" "ABSENT" "sur matrice" "N/A" "ERREUR" "VENV_A_INSTALLER"
+      echo "  → Installateur : Venv install (rebuild_all_venvs.sh). « Rattacher » ne crée pas le .venv."
+    else
+      printf "${RED}%-18s %-18s %-26s %-18s %-14s %-24s${RESET}\n" \
+        "VENV_ABSENT" "ABSENT" "hors matrice" "N/A" "ERREUR" "RATTACHER_PROJET"
+      echo "  → Package Updater : « Rattacher nouveaux projets » puis Venv install."
+    fi
     MATRIX_REFRESH_COUNT=$((MATRIX_REFRESH_COUNT + 0))
     PYPI_UPDATE_COUNT=$((PYPI_UPDATE_COUNT + 0))
     return 0

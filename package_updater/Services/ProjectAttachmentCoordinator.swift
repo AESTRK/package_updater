@@ -15,6 +15,9 @@ enum ProjectAttachmentCoordinator {
         for line in text.split(whereSeparator: \.isNewline) {
             let parts = line.split(separator: "\t", omittingEmptySubsequences: false).map(String.init)
             guard parts.count >= 2, parts[0] != "project", !parts[0].isEmpty else { continue }
+            if parts.count >= 5, parts[4] == "venv_missing" {
+                continue
+            }
             let project = parts[0]
             let package = parts[1]
             var list = packagesByProject[project, default: []]
@@ -55,11 +58,26 @@ enum ProjectAttachmentCoordinator {
         guard discoverResult.exitCode == 0 else { return }
 
         let proposals = parseProposals(from: UpdaterPaths.auditMatrixAttachTSV)
-        guard !proposals.isEmpty else {
-            presentInfoAlert(
-                title: "Aucun nouveau projet",
-                message: "Tous les projets Python détectés sont déjà couverts par la matrice."
-            )
+        let venvMissing = parseVenvMissingProjects(from: UpdaterPaths.auditMatrixAttachTSV)
+
+        if proposals.isEmpty {
+            if !venvMissing.isEmpty {
+                presentInfoAlert(
+                    title: "Venv manquant",
+                    message: """
+                    Déjà sur la matrice mais sans .venv :
+                    \(venvMissing.map { "• \($0)" }.joined(separator: "\n"))
+
+                    Lancez Installateur → Venv install (ou rebuild_all_venvs.sh).
+                    « Rattacher » ajoute un projet à la matrice ; il ne crée pas le venv.
+                    """
+                )
+            } else {
+                presentInfoAlert(
+                    title: "Aucun nouveau projet",
+                    message: "Tous les projets Python détectés sont déjà couverts par la matrice."
+                )
+            }
             return
         }
 
@@ -112,6 +130,21 @@ enum ProjectAttachmentCoordinator {
         alert.informativeText = message
         alert.addButton(withTitle: "OK")
         alert.runModal()
+    }
+
+    private static func parseVenvMissingProjects(from url: URL) -> [String] {
+        guard let text = try? String(contentsOf: url, encoding: .utf8) else { return [] }
+        var out: [String] = []
+        for line in text.split(whereSeparator: \.isNewline) {
+            let parts = line.split(separator: "\t", omittingEmptySubsequences: false).map(String.init)
+            guard parts.count >= 5, parts[4] == "venv_missing", !parts[0].isEmpty, parts[0] != "project" else {
+                continue
+            }
+            if !out.contains(parts[0]) {
+                out.append(parts[0])
+            }
+        }
+        return out.sorted()
     }
 
     private static func referenceProject(for project: String) -> String? {

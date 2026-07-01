@@ -2,17 +2,17 @@
 # Input → Venv audit → Mettre à jour matrice (auto) → Sync installateur → Venv install
 # chartboard_rust / orderbook_rust / market_microstructure_publisher_rust : apps Rust (Cargo), pas de venv Python — hors matrice.
 
-requests>=2.34.2 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, algo_order_executor, manual_orders, statics, market_microstructure_publisher, market_snapshot_publisher, orders, pnl_risk, portfolio, statics_currency, crypto_vol_corr, algo_rsi_crossover_backtest_gui, algo_rsi_crossover_backtest_headless, algo_rsi_strategy_runtime
+requests>=2.34.2 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, algo_order_executor, manual_orders, statics, orders, pnl_risk, portfolio, statics_currency, crypto_vol_corr, algo_rsi_crossover_backtest_gui, algo_rsi_crossover_backtest_headless, algo_rsi_strategy_runtime
 
-certifi>=2026.5.20 | algo_order_executor, manual_orders, statics, market_microstructure_publisher, market_snapshot_publisher, orders, pnl_risk, portfolio
+certifi>=2026.5.20 | algo_order_executor, manual_orders, statics, orders, pnl_risk, portfolio
 
 python-dateutil>=2.9.0.post0 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, statics, pnl_risk, portfolio, algo_rsi_crossover_backtest_gui, algo_rsi_crossover_backtest_headless, algo_rsi_strategy_runtime
 
 python-dotenv>=1.2.2 | algo_order_executor, manual_orders, pnl_risk
 
-pyzmq>=27.1.0 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, pnl_risk, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, algo_order_executor, trading_control, manual_orders, statics, market_microstructure_publisher, market_snapshot_publisher, algo_execution_guard, portfolio, statics_currency, orders, log_dashboard, algo_rsi_crossover_backtest_gui, algo_rsi_crossover_backtest_headless, algo_rsi_strategy_runtime
+pyzmq>=27.1.0 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, pnl_risk, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, algo_order_executor, trading_control, manual_orders, statics, algo_execution_guard, portfolio, statics_currency, orders, log_dashboard, algo_rsi_crossover_backtest_gui, algo_rsi_crossover_backtest_headless, algo_rsi_strategy_runtime
 
-websocket-client>=1.9.0 | algo_execution_guard, algo_ma_crossover_backtest_gui, algo_ma_strategy_runtime, algo_order_executor, manual_orders, market_microstructure_publisher, market_snapshot_publisher, orders, portfolio, pnl_risk, algo_rsi_crossover_backtest_gui, algo_rsi_strategy_runtime
+websocket-client>=1.9.0 | algo_execution_guard, algo_ma_crossover_backtest_gui, algo_ma_strategy_runtime, algo_order_executor, manual_orders, orders, portfolio, pnl_risk, algo_rsi_crossover_backtest_gui, algo_rsi_strategy_runtime
 
 websockets>=16.0 | pnl_risk
 

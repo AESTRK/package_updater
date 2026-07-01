@@ -178,6 +178,11 @@ project_attachments_discover() {
 
   while IFS=$'\t' read -r project project_dir req_file; do
     [[ -n "$project" ]] || continue
+    if [[ -s "$req_file" ]] && [[ ! -x "$project_dir/.venv/bin/python" ]]; then
+      printf '%s\t-\t-\t-\tvenv_missing\n' "$project" >>"$MATRIX_ATTACH_TSV"
+      MATRIX_ATTACH_COUNT=$((MATRIX_ATTACH_COUNT + 1))
+      continue
+    fi
     ref="$(project_attachments_reference_for "$project")"
     if [[ -n "$ref" ]]; then
       project_attachments_suggest_reference "$project" "$project_dir"
