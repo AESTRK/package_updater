@@ -4,7 +4,7 @@
 
 requests>=2.34.2 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, algo_order_executor, manual_orders, statics, orders, pnl_risk, portfolio, statics_currency, crypto_vol_corr, algo_rsi_crossover_backtest_gui, algo_rsi_crossover_backtest_headless, algo_rsi_strategy_runtime
 
-certifi>=2026.6.17 |  algo_order_executor, manual_orders, statics, orders, pnl_risk, portfolio
+certifi>=2026.6.17 | algo_order_executor, manual_orders, statics, orders, pnl_risk, portfolio
 
 python-dateutil>=2.9.0.post0 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, statics, pnl_risk, portfolio, algo_rsi_crossover_backtest_gui, algo_rsi_crossover_backtest_headless, algo_rsi_strategy_runtime
 
@@ -18,7 +18,7 @@ websockets>=16.0 | pnl_risk
 
 aiohttp>=3.14.1 | pnl_risk
 
-numpy>=2.5.0 |  algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, pnl_risk, portfolio, crypto_vol_corr, algo_rsi_crossover_backtest_gui, algo_rsi_crossover_backtest_headless, algo_rsi_strategy_runtime
+numpy>=2.5.0 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, pnl_risk, portfolio, crypto_vol_corr, algo_rsi_crossover_backtest_gui, algo_rsi_crossover_backtest_headless, algo_rsi_strategy_runtime
 
 pandas>=3.0.3 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, pnl_risk, portfolio, crypto_vol_corr, algo_rsi_crossover_backtest_gui, algo_rsi_crossover_backtest_headless, algo_rsi_strategy_runtime
 
@@ -28,4 +28,4 @@ openpyxl>=3.1.5 | pnl_risk, algo_ma_crossover_backtest_gui, crypto_vol_corr, alg
 
 pygame-ce | orders
 
-scipy>=1.18.0 |  crypto_vol_corr
+scipy>=1.18.0 | crypto_vol_corr
