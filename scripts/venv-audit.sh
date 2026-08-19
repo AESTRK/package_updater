@@ -181,8 +181,6 @@ write_matrix_refresh_row() {
   local project="$1" pkg="$2" spec="$3" current="$4" matrix_status="$5"
   [[ "$matrix_status" != "MATRICE_A_RAFRAICHIR" ]] && return 0
   local suggested="${pkg}>=${current}"
-  printf '%s | %s | %s | installé=%s | suggéré=%s\n' \
-    "$project" "$pkg" "$spec" "$current" "$suggested"
   printf '%s\t%s\t%s\t%s\t%s\n' \
     "$project" "$pkg" "$spec" "$current" "$suggested" >>"$MATRIX_REFRESH_TSV"
 }
