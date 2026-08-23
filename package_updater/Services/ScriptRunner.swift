@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import SwiftUI
 
 @MainActor
 final class ScriptRunner: ObservableObject {
@@ -7,6 +8,12 @@ final class ScriptRunner: ObservableObject {
     @Published private(set) var isRunning = false
     @Published private(set) var lastExitCode: Int32?
     @Published private(set) var statusMessage = "Prêt"
+
+    var statusColor: Color {
+        if isRunning { return .primary }
+        guard let lastExitCode else { return .secondary }
+        return lastExitCode == 0 ? .green : .red
+    }
 
     private var process: Process?
     private var outputPipe: Pipe?

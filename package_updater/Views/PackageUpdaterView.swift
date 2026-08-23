@@ -68,7 +68,7 @@ struct PackageUpdaterView: View {
                 Spacer()
                 Text(runner.statusMessage)
                     .font(.caption)
-                    .foregroundStyle(runner.lastExitCode == 0 ? .green : .primary)
+                    .foregroundStyle(runner.statusColor)
                 if runner.isRunning {
                     Button("Annuler") { runner.cancel() }
                 }
