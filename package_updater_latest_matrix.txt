@@ -1,24 +1,21 @@
 # Matrice packages | projets — source de vérité (Package Updater)
 # Input → Venv audit → Mettre à jour matrice (auto) → Sync installateur → Venv install
-# chartboard_rust / orderbook_rust / market_microstructure_publisher_rust : apps Rust (Cargo), pas de venv Python — hors matrice.
+# Apps Rust (Cargo) hors matrice : chartboard_rust, orderbook_rust, market_*_rust,
+# algo_execution_guard_rust, algo_order_executor_rust, algo_*_strategy_runtime_rust, …
 
-requests>=2.34.2 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, algo_order_executor, statics_currency, crypto_vol_corr, algo_rsi_crossover_backtest_gui, algo_rsi_crossover_backtest_headless, algo_rsi_strategy_runtime
+requests>=2.34.2 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_stress_test, statics_currency, crypto_vol_corr, algo_rsi_crossover_backtest_gui, algo_rsi_crossover_backtest_headless
 
-certifi>=2026.7.22 | algo_order_executor
+python-dateutil>=2.9.0.post0 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_stress_test, algo_rsi_crossover_backtest_gui, algo_rsi_crossover_backtest_headless
 
-python-dateutil>=2.9.0.post0 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, algo_rsi_crossover_backtest_gui, algo_rsi_crossover_backtest_headless, algo_rsi_strategy_runtime
+pyzmq>=27.1.0 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_stress_test, statics_currency, log_dashboard, algo_rsi_crossover_backtest_gui, algo_rsi_crossover_backtest_headless
 
-python-dotenv>=1.2.2 | algo_order_executor
+websocket-client>=1.9.0 | algo_ma_crossover_backtest_gui, algo_rsi_crossover_backtest_gui
 
-pyzmq>=27.1.0 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, algo_order_executor, algo_execution_guard, statics_currency, log_dashboard, algo_rsi_crossover_backtest_gui, algo_rsi_crossover_backtest_headless, algo_rsi_strategy_runtime
+numpy>=2.5.2 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_stress_test, crypto_vol_corr, algo_rsi_crossover_backtest_gui, algo_rsi_crossover_backtest_headless
 
-websocket-client>=1.9.0 | algo_execution_guard, algo_ma_crossover_backtest_gui, algo_ma_strategy_runtime, algo_order_executor, algo_rsi_crossover_backtest_gui, algo_rsi_strategy_runtime
+pandas>=3.0.5 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_stress_test, crypto_vol_corr, algo_rsi_crossover_backtest_gui, algo_rsi_crossover_backtest_headless
 
-numpy>=2.5.2 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, crypto_vol_corr, algo_rsi_crossover_backtest_gui, algo_rsi_crossover_backtest_headless, algo_rsi_strategy_runtime
-
-pandas>=3.0.5 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_strategy_runtime, algo_ma_stress_test, crypto_vol_corr, algo_rsi_crossover_backtest_gui, algo_rsi_crossover_backtest_headless, algo_rsi_strategy_runtime
-
-matplotlib>=3.11.1 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_strategy_runtime, algo_ma_stress_test, algo_execution_guard, crypto_vol_corr, algo_rsi_crossover_backtest_gui, algo_rsi_strategy_runtime
+matplotlib>=3.11.1 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_stress_test, crypto_vol_corr, algo_rsi_crossover_backtest_gui
 
 openpyxl>=3.1.5 | algo_ma_crossover_backtest_gui, crypto_vol_corr, algo_rsi_crossover_backtest_gui
 
