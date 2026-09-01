@@ -2,18 +2,19 @@
 # Input → Venv audit → Mettre à jour matrice (auto) → Sync installateur → Venv install
 # Apps Rust (Cargo) hors matrice : chartboard_rust, orderbook_rust, market_*_rust,
 # algo_execution_guard_rust, algo_order_executor_rust, algo_*_strategy_runtime_rust, …
+# Backtests headless (batch) : stack_registry uniquement, pas de venv Install.
 
-requests>=2.34.2 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_stress_test, statics_currency, crypto_vol_corr, algo_rsi_crossover_backtest_gui, algo_rsi_crossover_backtest_headless
+requests>=2.34.2 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_stress_test, statics_currency, crypto_vol_corr, algo_rsi_crossover_backtest_gui
 
-python-dateutil>=2.9.0.post0 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_stress_test, algo_rsi_crossover_backtest_gui, algo_rsi_crossover_backtest_headless
+python-dateutil>=2.9.0.post0 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_stress_test, algo_rsi_crossover_backtest_gui
 
-pyzmq>=27.1.0 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_stress_test, statics_currency, log_dashboard, algo_rsi_crossover_backtest_gui, algo_rsi_crossover_backtest_headless
+pyzmq>=27.2.0 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_stress_test, statics_currency, log_dashboard, algo_rsi_crossover_backtest_gui
 
 websocket-client>=1.9.0 | algo_ma_crossover_backtest_gui, algo_rsi_crossover_backtest_gui
 
-numpy>=2.5.2 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_stress_test, crypto_vol_corr, algo_rsi_crossover_backtest_gui, algo_rsi_crossover_backtest_headless
+numpy>=2.5.2 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_stress_test, crypto_vol_corr, algo_rsi_crossover_backtest_gui
 
-pandas>=3.0.5 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_crossover_backtest_headless, algo_ma_stress_test, crypto_vol_corr, algo_rsi_crossover_backtest_gui, algo_rsi_crossover_backtest_headless
+pandas>=3.0.5 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_stress_test, crypto_vol_corr, algo_rsi_crossover_backtest_gui
 
 matplotlib>=3.11.1 | algo_klines_cache_gui, algo_ma_crossover_backtest_gui, algo_ma_stress_test, crypto_vol_corr, algo_rsi_crossover_backtest_gui
 
