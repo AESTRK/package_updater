@@ -55,5 +55,13 @@ package_updater/
 
 ## Prérequis
 
-- `config_manager` cloné avec `config/generated/pip_matrix.txt` (Sync stack)
+- `config_manager` cloné avec `config/generated/pip_matrix.txt` (Sync stack dans Config Manager / installer)
 - Venvs Python sous `~/PycharmProjects/<app>/.venv`
+
+## Config (rappel stack)
+
+| Couche | Chemin |
+|--------|--------|
+| Défauts persist / inject | `config_manager/config/runtime/` → `stack.json` |
+| Overrides machine | `config_manager/config/local/<app>.json` |
+| Matrice pip | `config_manager/config/generated/pip_matrix.txt` |
