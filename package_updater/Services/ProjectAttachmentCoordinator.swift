@@ -164,6 +164,7 @@ enum ScriptProcessRunner {
         env["PACKAGE_UPDATER_ROOT"] = UpdaterPaths.repoRoot.path
         env["INSTALLER_ROOT"] = UpdaterPaths.installerRoot.path
         env["REQUIREMENTS_MATRIX"] = matrixURL.path
+        env["ALPHA_LAGOON_CONFIG_ROOT"] = UpdaterPaths.configDataDir.path
         env["LOG_BASE_DIR"] = UpdaterPaths.runsLogBase.path
         env["ALPHA_LAGOON_ROOT"] = UpdaterPaths.suiteRoot.path
         env["PYTHONUNBUFFERED"] = "1"

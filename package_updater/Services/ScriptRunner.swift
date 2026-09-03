@@ -98,6 +98,7 @@ final class ScriptRunner: ObservableObject {
         env["PACKAGE_UPDATER_LOG_PID"] = String(ProcessInfo.processInfo.processIdentifier)
         env["INSTALLER_ROOT"] = UpdaterPaths.installerRoot.path
         env["REQUIREMENTS_MATRIX"] = requirementsMatrix.path
+        env["ALPHA_LAGOON_CONFIG_ROOT"] = UpdaterPaths.configDataDir.path
         env["LOG_BASE_DIR"] = UpdaterPaths.runsLogBase.path
         env["ALPHA_LAGOON_ROOT"] = UpdaterPaths.suiteRoot.path
         env["PYTHONUNBUFFERED"] = "1"

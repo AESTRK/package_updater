@@ -13,7 +13,7 @@ Projet complémentaire : [**installer**](../installer) (clone Git, venv, build R
 | **Venv audit** | `audit` | Compare les venvs locaux à la matrice |
 | **Mettre à jour matrice (auto)** | `audit-apply` | Remonte les versions minimales détectées |
 | **Rattacher nouveaux projets…** | interactif | Découvre `requirements.txt` / `Cargo.toml` non référencés — confirmation par projet |
-| **Sync installateur** | `sync-installer` | Archive un snapshot de `config/generated/pip_matrix.txt` |
+| **Archiver matrice** | `archive-matrix` | Archive un snapshot de `config/generated/pip_matrix.txt` |
 
 Éditeur intégré : matrice canonique `config/generated/pip_matrix.txt` (Enregistrer / Recharger / Ouvrir dans l’éditeur par défaut).
 
@@ -27,13 +27,13 @@ Projet complémentaire : [**installer**](../installer) (clone Git, venv, build R
 | `scripts/update-matrix-auto.sh` | Mise à jour auto |
 | `scripts/discover-project-attachments.sh` | Détection nouveaux projets |
 | `scripts/apply-project-attachments.sh` | Application des rattachements |
-| `scripts/sync-installer.sh` | Archive la matrice canonique |
+| `scripts/archive-matrix.sh` | Archive la matrice canonique |
 
 ## Logs
 
 Racine : `~/Documents/AlphaLagoon/_logs_XcodeProjects/package_updater/`
 
-Convention : `<type>_jj-MM-aaaa_HH-mm-ss_pid<N>.log` — ex. `venv_audit_02-06-2026_16-49-30_pid4321.log`, `sync_installer_…`, `maj_matrice_…`, `rattache_projets_…`.
+Convention : `<type>_jj-MM-aaaa_HH-mm-ss_pid<N>.log` — ex. `venv_audit_02-06-2026_16-49-30_pid4321.log`, `archive_matrix_…`, `maj_matrice_…`, `rattache_projets_…`.
 
 ## Structure du code
 
@@ -49,7 +49,7 @@ package_updater/
 └── scripts/
     ├── venv-audit.sh
     ├── update-matrix-auto.sh
-    ├── sync-installer.sh
+    ├── archive-matrix.sh
     └── lib/project-attachments.sh
 ```
 

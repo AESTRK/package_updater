@@ -61,8 +61,8 @@ enum UpdaterPaths {
         scriptsDirectory.appendingPathComponent("update-matrix-auto.sh")
     }
 
-    static var syncInstallerScript: URL {
-        scriptsDirectory.appendingPathComponent("sync-installer.sh")
+    static var archiveMatrixScript: URL {
+        scriptsDirectory.appendingPathComponent("archive-matrix.sh")
     }
 
     static var discoverProjectAttachmentsScript: URL {
@@ -79,8 +79,8 @@ enum UpdaterPaths {
             return venvAuditScript
         case "audit-apply":
             return updateMatrixAutoScript
-        case "sync-installer":
-            return syncInstallerScript
+        case "archive-matrix":
+            return archiveMatrixScript
         case "apply-attachments":
             return applyProjectAttachmentsScript
         default:
@@ -127,8 +127,8 @@ enum UpdaterPaths {
             return "venv_audit"
         case "audit-apply":
             return "maj_matrice"
-        case "sync-installer":
-            return "sync_installer"
+        case "archive-matrix":
+            return "archive_matrix"
         case "apply-attachments":
             return "rattache_projets"
         default:

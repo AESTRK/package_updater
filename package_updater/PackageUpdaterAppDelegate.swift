@@ -27,10 +27,10 @@ final class PackageUpdaterAppDelegate: NSObject, NSApplicationDelegate {
         PackageUpdaterActions.attachNewProjects(runner: runner, matrix: matrix)
     }
 
-    @objc func dockRunSyncInstaller() {
+    @objc func dockRunArchiveMatrix() {
         guard let runner = PackageUpdaterAppServices.runner,
               let matrix = PackageUpdaterAppServices.matrix else { return }
-        PackageUpdaterActions.runUpdater(mode: "sync-installer", runner: runner, matrix: matrix)
+        PackageUpdaterActions.runUpdater(mode: "archive-matrix", runner: runner, matrix: matrix)
     }
 
     @objc func dockCancelRun() {

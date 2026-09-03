@@ -129,4 +129,4 @@ PY
 archive_matrix "$REQUIREMENTS_MATRIX"
 
 log ""
-log "Relancez « Sync installateur » puis venv install si besoin."
+log "Relancez « Archiver matrice » puis venv install si besoin."

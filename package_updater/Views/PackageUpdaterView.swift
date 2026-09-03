@@ -14,7 +14,7 @@ struct PackageUpdaterView: View {
                 actionButton("Venv audit", mode: "audit")
                 actionButton("Mettre à jour matrice (auto)", mode: "audit-apply")
                 attachProjectsButton
-                actionButton("Sync installateur", mode: "sync-installer", prominent: true)
+                actionButton("Archiver matrice", mode: "archive-matrix", prominent: true)
             }
 
             matrixToolbar

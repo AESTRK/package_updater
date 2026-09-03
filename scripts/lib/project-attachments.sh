@@ -47,7 +47,7 @@ project_attachments_listed_on_line() {
 }
 
 project_attachments_installed_version() {
-  "$1" show "$2" 2>/dev/null | awk -F': ' '/^Version:/{gsub(/^[ \t]+/,"",$2); print $2; exit}'
+  "$1" show "$2" 2>/dev/null | awk -F': ' '/^Version:/{gsub(/^[ \t]+/,"",$2); print $2; exit}' || true
 }
 
 project_attachments_pkg_installed() {
