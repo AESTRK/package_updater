@@ -1,3 +1,4 @@
+import AlphaLagoonPaths
 import Foundation
 
 enum UpdaterPaths {
@@ -17,32 +18,21 @@ enum UpdaterPaths {
         return Bundle.main.bundleURL.deletingLastPathComponent()
     }()
 
-    static let suiteRoot: URL = {
-        let env = ProcessInfo.processInfo.environment["ALPHA_LAGOON_ROOT"]
-        if let env, !env.isEmpty {
-            return URL(fileURLWithPath: (env as NSString).expandingTildeInPath, isDirectory: true)
-        }
-        return URL(fileURLWithPath: NSHomeDirectory())
-            .appendingPathComponent("Documents/AlphaLagoon", isDirectory: true)
-    }()
+    static let suiteRoot: URL = AlphaLagoonPaths.suiteRoot()
 
     static var xcodeProjectsLogRoot: URL {
         suiteRoot.appendingPathComponent("_logs_XcodeProjects", isDirectory: true)
     }
 
     static var configDataDir: URL {
-        if let env = ProcessInfo.processInfo.environment["ALPHA_LAGOON_CONFIG_ROOT"], !env.isEmpty {
-            return URL(fileURLWithPath: (env as NSString).expandingTildeInPath, isDirectory: true)
-        }
-        return URL(fileURLWithPath: NSHomeDirectory())
-            .appendingPathComponent("XcodeProjects/config_manager/config", isDirectory: true)
+        AlphaLagoonPaths.configDataDir()
     }
 
     static var requirementsMatrixURL: URL {
         if let env = ProcessInfo.processInfo.environment["REQUIREMENTS_MATRIX"], !env.isEmpty {
             return URL(fileURLWithPath: (env as NSString).expandingTildeInPath)
         }
-        return configDataDir.appendingPathComponent("generated/pip_matrix.txt")
+        return AlphaLagoonPaths.pipMatrixURL(configDataDir: configDataDir)
     }
 
     static var matrixHistoryDirectory: URL {

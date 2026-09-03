@@ -78,6 +78,7 @@
 			);
 			name = package_updater;
 			packageProductDependencies = (
+				ALPATHPKGDEP0001 /* AlphaLagoonPaths */,
 			);
 			productName = package_updater;
 			productReference = A1PKUPBB2FCA1EA700362D27 /* package_updater.app */;
@@ -112,7 +113,10 @@
 			productRefGroup = A1PKUPBC2FCA1EA700362D27 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
-			targets = (
+			packageReferences = (
+				ALPATHPKGREF0001 /* XCLocalSwiftPackageReference \"../AlphaLagoonPaths\" */,
+			);
+					targets = (
 				A1PKUPBA2FCA1EA700362D27 /* package_updater */,
 			);
 		};
@@ -350,6 +354,22 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+
+/* Begin XCLocalSwiftPackageReference section */
+		ALPATHPKGREF0001 /* XCLocalSwiftPackageReference "../AlphaLagoonPaths" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../AlphaLagoonPaths;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		ALPATHPKGDEP0001 /* AlphaLagoonPaths */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AlphaLagoonPaths;
+			package = ALPATHPKGREF0001 /* XCLocalSwiftPackageReference "../AlphaLagoonPaths" */;
+		};
+/* End XCSwiftPackageProductDependency section */
+
 /* End XCConfigurationList section */
 	};
 	rootObject = A1PKUPB32FCA1EA700362D27 /* Project object */;
