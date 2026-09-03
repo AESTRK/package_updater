@@ -105,7 +105,7 @@ generate_project_requirements() {
 }
 
 get_installed_version() {
-  "$1" show "$2" 2>/dev/null | awk -F': ' '/^Version:/{gsub(/^[ \t]+/,"",$2); print $2; exit}'
+  "$1" show "$2" 2>/dev/null | awk -F': ' '/^Version:/{gsub(/^[ \t]+/,"",$2); print $2; exit}' || true
 }
 
 get_latest_pypi_version() {
