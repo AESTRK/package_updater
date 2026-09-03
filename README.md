@@ -13,21 +13,22 @@ Projet complémentaire : [**installer**](../installer) (clone Git, venv, build R
 | **Venv audit** | `audit` | Compare les venvs locaux à la matrice |
 | **Mettre à jour matrice (auto)** | `audit-apply` | Remonte les versions minimales détectées |
 | **Rattacher nouveaux projets…** | interactif | Découvre `requirements.txt` / `Cargo.toml` non référencés — confirmation par projet |
-| **Sync installateur** | `sync-installer` | Copie la matrice vers `installer/package_updater_latest_matrix.txt` |
+| **Sync installateur** | `sync-installer` | Copie la matrice vers `config/generated/pip_matrix.txt` |
 
-Éditeur intégré : matrice `package_updater_latest_matrix.txt` (Enregistrer / Recharger / Ouvrir dans l’éditeur par défaut).
+Éditeur intégré : matrice pip (canonique `config/generated/pip_matrix.txt` si présente, sinon copie locale `package_updater_latest_matrix.txt`).
 
 ## Fichiers
 
 | Fichier | Usage |
 |---------|-------|
-| `package_updater_latest_matrix.txt` | Matrice courante (racine du projet) |
+| `config/generated/pip_matrix.txt` | Matrice canonique (config_manager, git) |
+| `package_updater_latest_matrix.txt` | Copie locale de travail (fallback éditeur) |
 | `history/YYYYMMDD_HHMMSS_…` | Archives horodatées de la matrice |
 | `scripts/venv-audit.sh` | Audit venv |
 | `scripts/update-matrix-auto.sh` | Mise à jour auto |
 | `scripts/discover-project-attachments.sh` | Détection nouveaux projets |
 | `scripts/apply-project-attachments.sh` | Application des rattachements |
-| `scripts/sync-installer.sh` | Copie vers l’installateur |
+| `scripts/sync-installer.sh` | Copie vers `config/generated/pip_matrix.txt` |
 
 ## Logs
 

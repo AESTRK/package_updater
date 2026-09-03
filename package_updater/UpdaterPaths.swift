@@ -30,11 +30,26 @@ enum UpdaterPaths {
         suiteRoot.appendingPathComponent("_logs_XcodeProjects", isDirectory: true)
     }
 
+    static var configDataDir: URL {
+        if let env = ProcessInfo.processInfo.environment["ALPHA_LAGOON_CONFIG_ROOT"], !env.isEmpty {
+            return URL(fileURLWithPath: (env as NSString).expandingTildeInPath, isDirectory: true)
+        }
+        return URL(fileURLWithPath: NSHomeDirectory())
+            .appendingPathComponent("XcodeProjects/config_manager/config", isDirectory: true)
+    }
+
     static var requirementsMatrixURL: URL {
         if let env = ProcessInfo.processInfo.environment["REQUIREMENTS_MATRIX"], !env.isEmpty {
             return URL(fileURLWithPath: (env as NSString).expandingTildeInPath)
         }
-        return repoRoot.appendingPathComponent(matrixFileName)
+        let generated = configDataDir.appendingPathComponent("generated/pip_matrix.txt")
+        if FileManager.default.fileExists(atPath: generated.path) {
+            return generated
+        }
+        if FileManager.default.fileExists(atPath: repoRoot.appendingPathComponent(matrixFileName).path) {
+            return repoRoot.appendingPathComponent(matrixFileName)
+        }
+        return generated
     }
 
     static var matrixHistoryDirectory: URL {
