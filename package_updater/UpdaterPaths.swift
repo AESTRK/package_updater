@@ -104,11 +104,7 @@ enum UpdaterPaths {
 
     /// Horodatage pour noms de fichiers : `02-06-2026_16-49-30` (fuseau local, format FR).
     static func frenchLogStamp(from date: Date = Date()) -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "fr_FR")
-        formatter.timeZone = .current
-        formatter.dateFormat = "dd-MM-yyyy_HH-mm-ss"
-        return formatter.string(from: date)
+        AlphaLagoonPaths.frenchLogStamp(from: date)
     }
 
     static func logBaseName(forMode mode: String) -> String {

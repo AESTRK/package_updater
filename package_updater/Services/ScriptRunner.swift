@@ -1,3 +1,4 @@
+import AlphaLagoonPaths
 import Combine
 import Foundation
 import SwiftUI
@@ -98,19 +99,17 @@ final class ScriptRunner: ObservableObject {
         env["PACKAGE_UPDATER_LOG_PID"] = String(ProcessInfo.processInfo.processIdentifier)
         env["INSTALLER_ROOT"] = UpdaterPaths.installerRoot.path
         env["REQUIREMENTS_MATRIX"] = requirementsMatrix.path
-        env["ALPHA_LAGOON_CONFIG_ROOT"] = UpdaterPaths.configDataDir.path
         env["LOG_BASE_DIR"] = UpdaterPaths.runsLogBase.path
-        env["ALPHA_LAGOON_ROOT"] = UpdaterPaths.suiteRoot.path
-        env["PYTHONUNBUFFERED"] = "1"
-        env["CLICOLOR_FORCE"] = "1"
-        env["TERM"] = "xterm-256color"
+        AlphaLagoonShellEnvironment.applyAlphaLagoonRoots(
+            configDataDir: UpdaterPaths.configDataDir,
+            suiteRoot: UpdaterPaths.suiteRoot,
+            to: &env
+        )
+        AlphaLagoonShellEnvironment.applyTerminalDefaults(to: &env)
         for (key, value) in extraEnvironment {
             env[key] = value
         }
-        if env["PATH"] == nil || env["PATH"]?.contains("/opt/homebrew/bin") == false {
-            env["PATH"] = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
-                + (env["PATH"].map { ":\($0)" } ?? "")
-        }
+        AlphaLagoonShellEnvironment.ensureHomebrewPath(in: &env)
         proc.environment = env
 
         let pipe = Pipe()

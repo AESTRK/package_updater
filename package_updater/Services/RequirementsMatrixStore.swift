@@ -37,7 +37,7 @@ final class RequirementsMatrixStore: ObservableObject {
             try text.write(to: fileURL, atomically: true, encoding: .utf8)
             UpdaterPaths.archiveMatrixSnapshot(from: fileURL)
             isDirty = false
-            statusMessage = "Matrice enregistrée (historique → history/)"
+            statusMessage = "Matrice enregistrée — snapshot dans history/"
             return true
         } catch {
             statusMessage = "Échec enregistrement : \(error.localizedDescription)"

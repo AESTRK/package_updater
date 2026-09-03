@@ -79,6 +79,7 @@
 			name = package_updater;
 			packageProductDependencies = (
 				ALPATHPKGDEP0001 /* AlphaLagoonPaths */,
+				ALPATHPKGDEP0002 /* AlphaLagoonAppKit */,
 			);
 			productName = package_updater;
 			productReference = A1PKUPBB2FCA1EA700362D27 /* package_updater.app */;
@@ -366,6 +367,11 @@
 		ALPATHPKGDEP0001 /* AlphaLagoonPaths */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AlphaLagoonPaths;
+			package = ALPATHPKGREF0001 /* XCLocalSwiftPackageReference "../AlphaLagoonPaths" */;
+		};
+		ALPATHPKGDEP0002 /* AlphaLagoonAppKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AlphaLagoonAppKit;
 			package = ALPATHPKGREF0001 /* XCLocalSwiftPackageReference "../AlphaLagoonPaths" */;
 		};
 /* End XCSwiftPackageProductDependency section */

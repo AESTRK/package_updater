@@ -1,3 +1,4 @@
+import AlphaLagoonAppKit
 import AppKit
 
 final class PackageUpdaterAppDelegate: NSObject, NSApplicationDelegate {

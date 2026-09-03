@@ -4,6 +4,16 @@ Application SwiftUI pour maintenir la **matrice des dépendances** Python/Rust d
 
 Bundle : `io.aestrk.PackageUpdater`
 
+## Prérequis build
+
+Package SPM local **AlphaLagoonPaths** :
+
+```text
+~/XcodeProjects/AlphaLagoonPaths
+```
+
+Sibling de `package_updater/` — résolution de `config/generated/pip_matrix.txt`.
+
 Projet complémentaire : [**installer**](../installer) (clone Git, venv, build Rust, DMG launcher).
 
 ## Actions
