@@ -2,7 +2,7 @@ import Foundation
 
 enum UpdaterPaths {
     static let projectName = "package_updater"
-    static let matrixFileName = "package_updater_latest_matrix.txt"
+    static let matrixFileName = "pip_matrix.txt"
 
     static let repoRoot: URL = {
         let env = ProcessInfo.processInfo.environment["PACKAGE_UPDATER_ROOT"]
@@ -42,14 +42,7 @@ enum UpdaterPaths {
         if let env = ProcessInfo.processInfo.environment["REQUIREMENTS_MATRIX"], !env.isEmpty {
             return URL(fileURLWithPath: (env as NSString).expandingTildeInPath)
         }
-        let generated = configDataDir.appendingPathComponent("generated/pip_matrix.txt")
-        if FileManager.default.fileExists(atPath: generated.path) {
-            return generated
-        }
-        if FileManager.default.fileExists(atPath: repoRoot.appendingPathComponent(matrixFileName).path) {
-            return repoRoot.appendingPathComponent(matrixFileName)
-        }
-        return generated
+        return configDataDir.appendingPathComponent("generated/pip_matrix.txt")
     }
 
     static var matrixHistoryDirectory: URL {
@@ -103,10 +96,6 @@ enum UpdaterPaths {
         return URL(fileURLWithPath: NSHomeDirectory())
             .appendingPathComponent("XcodeProjects/installer", isDirectory: true)
     }()
-
-    static var installerMatrixURL: URL {
-        installerRoot.appendingPathComponent(matrixFileName)
-    }
 
     static var runsLogBase: URL {
         xcodeProjectsLogRoot.appendingPathComponent(projectName, isDirectory: true)
@@ -194,19 +183,10 @@ enum UpdaterPaths {
             return target
         }
 
-        let candidates: [URL] = [
-            repoRoot.appendingPathComponent("package_updater_latest_output"),
-            repoRoot.appendingPathComponent("requirements_matrix.txt"),
-            installerRoot.appendingPathComponent("requirements_matrix.txt"),
-        ]
-
-        for source in candidates where fm.fileExists(atPath: source.path) {
-            try? fm.copyItem(at: source, to: target)
-            if fm.fileExists(atPath: target.path) {
-                return target
-            }
-        }
-
+        try? fm.createDirectory(
+            at: target.deletingLastPathComponent(),
+            withIntermediateDirectories: true
+        )
         fm.createFile(atPath: target.path, contents: nil)
         return target
     }

@@ -5,15 +5,10 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="${PACKAGE_UPDATER_ROOT:-$(cd "$SCRIPT_DIR/.." && pwd)}"
 CONFIG_ROOT="${ALPHA_LAGOON_CONFIG_ROOT:-$HOME/XcodeProjects/config_manager/config}"
-if [[ -f "$CONFIG_ROOT/scripts/stack_paths.sh" ]]; then
-  # shellcheck source=/dev/null
-  source "$CONFIG_ROOT/scripts/stack_paths.sh"
-  MATRIX_NAME="pip_matrix.txt"
-  DEFAULT_MATRIX="$(stack_pip_matrix)"
-else
-  MATRIX_NAME="package_updater_latest_matrix.txt"
-  DEFAULT_MATRIX="${REPO_ROOT}/${MATRIX_NAME}"
-fi
+# shellcheck source=/dev/null
+source "$CONFIG_ROOT/scripts/stack_paths.sh"
+MATRIX_NAME="pip_matrix.txt"
+DEFAULT_MATRIX="$(stack_pip_matrix)"
 REQUIREMENTS_MATRIX="${REQUIREMENTS_MATRIX:-$DEFAULT_MATRIX}"
 LOG_BASE_DIR="${LOG_BASE_DIR:-$HOME/Documents/AlphaLagoon/_logs_XcodeProjects/package_updater}"
 HIST_DIR="${REPO_ROOT}/history"

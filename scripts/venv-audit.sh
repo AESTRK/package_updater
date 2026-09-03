@@ -9,15 +9,9 @@ PROJECTS_ROOT="${PROJECTS_ROOT:-$HOME/PycharmProjects}"
 REPO_ROOT="${PACKAGE_UPDATER_ROOT:-$HOME/XcodeProjects/package_updater}"
 LOG_BASE_DIR="${LOG_BASE_DIR:-$HOME/Documents/AlphaLagoon/_logs_XcodeProjects/package_updater}"
 CONFIG_ROOT="${ALPHA_LAGOON_CONFIG_ROOT:-$HOME/XcodeProjects/config_manager/config}"
-if [[ -n "${REQUIREMENTS_MATRIX:-}" ]]; then
-  DEFAULT_MATRIX="$REQUIREMENTS_MATRIX"
-elif [[ -f "$CONFIG_ROOT/scripts/stack_paths.sh" ]]; then
-  # shellcheck source=/dev/null
-  source "$CONFIG_ROOT/scripts/stack_paths.sh"
-  DEFAULT_MATRIX="$(stack_pip_matrix)"
-else
-  DEFAULT_MATRIX="$REPO_ROOT/package_updater_latest_matrix.txt"
-fi
+# shellcheck source=/dev/null
+source "$CONFIG_ROOT/scripts/stack_paths.sh"
+DEFAULT_MATRIX="$(stack_pip_matrix)"
 REQUIREMENTS_MATRIX="${REQUIREMENTS_MATRIX:-$DEFAULT_MATRIX}"
 
 GREEN=$'\033[32m'

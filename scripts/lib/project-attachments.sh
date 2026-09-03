@@ -8,12 +8,10 @@ project_attachments_init() {
   CONFIG_ROOT="${ALPHA_LAGOON_CONFIG_ROOT:-$HOME/XcodeProjects/config_manager/config}"
   if [[ -n "${REQUIREMENTS_MATRIX:-}" ]]; then
     DEFAULT_MATRIX="$REQUIREMENTS_MATRIX"
-  elif [[ -f "$CONFIG_ROOT/scripts/stack_paths.sh" ]]; then
+  else
     # shellcheck source=/dev/null
     source "$CONFIG_ROOT/scripts/stack_paths.sh"
     DEFAULT_MATRIX="$(stack_pip_matrix)"
-  else
-    DEFAULT_MATRIX="$REPO_ROOT/package_updater_latest_matrix.txt"
   fi
   REQUIREMENTS_MATRIX="${REQUIREMENTS_MATRIX:-$DEFAULT_MATRIX}"
   MATRIX_ATTACH_TSV="${MATRIX_ATTACH_TSV:-$LOG_BASE_DIR/audit_matrix_attach.tsv}"
