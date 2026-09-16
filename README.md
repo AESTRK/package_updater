@@ -2,8 +2,6 @@
 
 Application SwiftUI pour maintenir la **matrice des dépendances** Python/Rust de la stack.
 
-**Backlog stack** (roadmap + dette technique) : [`config_manager/ROADMAP.md`](../config_manager/ROADMAP.md)
-
 Bundle : `io.aestrk.PackageUpdater`
 
 ## Prérequis build
