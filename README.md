@@ -41,7 +41,7 @@ Projet complémentaire : [**installer**](../installer) (clone Git, venv, build R
 
 ## Logs
 
-Racine : `~/Documents/AlphaLagoon/_logs_XcodeProjects/package_updater/`
+Racine : `~/AlphaLagoon/_logs_XcodeProjects/package_updater/`
 
 Convention : `<type>_jj-MM-aaaa_HH-mm-ss_pid<N>.log` — ex. `venv_audit_02-06-2026_16-49-30_pid4321.log`, `archive_matrix_…`, `maj_matrice_…`, `rattache_projets_…`.
 

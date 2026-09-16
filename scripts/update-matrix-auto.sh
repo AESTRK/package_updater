@@ -10,7 +10,7 @@ source "$CONFIG_ROOT/scripts/stack_paths.sh"
 MATRIX_NAME="pip_matrix.txt"
 DEFAULT_MATRIX="$(stack_pip_matrix)"
 REQUIREMENTS_MATRIX="${REQUIREMENTS_MATRIX:-$DEFAULT_MATRIX}"
-LOG_BASE_DIR="${LOG_BASE_DIR:-$HOME/Documents/AlphaLagoon/_logs_XcodeProjects/package_updater}"
+LOG_BASE_DIR="${LOG_BASE_DIR:-$HOME/AlphaLagoon/_logs_XcodeProjects/package_updater}"
 HIST_DIR="${REPO_ROOT}/history"
 TSV="${LOG_BASE_DIR}/audit_matrix_refresh.tsv"
 

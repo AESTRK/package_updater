@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 PROJECTS_ROOT="${PROJECTS_ROOT:-$HOME/PycharmProjects}"
 REPO_ROOT="${PACKAGE_UPDATER_ROOT:-$HOME/XcodeProjects/package_updater}"
-LOG_BASE_DIR="${LOG_BASE_DIR:-$HOME/Documents/AlphaLagoon/_logs_XcodeProjects/package_updater}"
+LOG_BASE_DIR="${LOG_BASE_DIR:-$HOME/AlphaLagoon/_logs_XcodeProjects/package_updater}"
 CONFIG_ROOT="${ALPHA_LAGOON_CONFIG_ROOT:-$HOME/XcodeProjects/config_manager/config}"
 # shellcheck source=/dev/null
 source "$CONFIG_ROOT/scripts/stack_paths.sh"
