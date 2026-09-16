@@ -3,7 +3,7 @@ import AppKit
 import SwiftUI
 
 enum PackageUpdaterQuickActionsMenu {
-    static let centerOnPrimaryScreenTitle = "Centrer sur l'écran principal"
+    static let centerOnPrimaryScreenTitle = QuickActionsDockMenuBuilder.centerOnPrimaryScreenTitle
 
     @ViewBuilder
     static func contextMenuContent(runner: ScriptRunner, matrix: RequirementsMatrixStore) -> some View {
@@ -48,36 +48,24 @@ enum PackageUpdaterQuickActionsMenu {
         let menu = NSMenu()
         let running = PackageUpdaterAppServices.runner?.isRunning ?? false
 
-        menu.addItem(item("Venv audit", action: #selector(PackageUpdaterAppDelegate.dockRunAudit), target: delegate, enabled: !running))
-        menu.addItem(item("Mettre à jour matrice (auto)", action: #selector(PackageUpdaterAppDelegate.dockRunAuditApply), target: delegate, enabled: !running))
-        menu.addItem(item("Rattacher nouveaux projets…", action: #selector(PackageUpdaterAppDelegate.dockAttachNewProjects), target: delegate, enabled: !running))
-        menu.addItem(item("Archiver matrice", action: #selector(PackageUpdaterAppDelegate.dockRunArchiveMatrix), target: delegate, enabled: !running))
+        menu.addItem(QuickActionsDockMenuBuilder.item("Venv audit", action: #selector(PackageUpdaterAppDelegate.dockRunAudit), target: delegate, enabled: !running))
+        menu.addItem(QuickActionsDockMenuBuilder.item("Mettre à jour matrice (auto)", action: #selector(PackageUpdaterAppDelegate.dockRunAuditApply), target: delegate, enabled: !running))
+        menu.addItem(QuickActionsDockMenuBuilder.item("Rattacher nouveaux projets…", action: #selector(PackageUpdaterAppDelegate.dockAttachNewProjects), target: delegate, enabled: !running))
+        menu.addItem(QuickActionsDockMenuBuilder.item("Archiver matrice", action: #selector(PackageUpdaterAppDelegate.dockRunArchiveMatrix), target: delegate, enabled: !running))
         if running {
-            menu.addItem(item("Annuler", action: #selector(PackageUpdaterAppDelegate.dockCancelRun), target: delegate))
+            menu.addItem(QuickActionsDockMenuBuilder.item("Annuler", action: #selector(PackageUpdaterAppDelegate.dockCancelRun), target: delegate))
         }
 
         menu.addItem(.separator())
         menu.addItem(
-            item(
-                centerOnPrimaryScreenTitle,
+            QuickActionsDockMenuBuilder.centerWindowItem(
+                target: delegate,
                 action: #selector(PackageUpdaterAppDelegate.centerMainWindowOnPrimaryScreen),
-                target: delegate
+                title: centerOnPrimaryScreenTitle
             )
         )
 
         return menu
-    }
-
-    private static func item(
-        _ title: String,
-        action: Selector,
-        target: AnyObject,
-        enabled: Bool = true
-    ) -> NSMenuItem {
-        let item = NSMenuItem(title: title, action: action, keyEquivalent: "")
-        item.target = target
-        item.isEnabled = enabled
-        return item
     }
 }
 

@@ -103,10 +103,6 @@ enum UpdaterPaths {
     }
 
     /// Horodatage pour noms de fichiers : `02-06-2026_16-49-30` (fuseau local, format FR).
-    static func frenchLogStamp(from date: Date = Date()) -> String {
-        AlphaLagoonPaths.frenchLogStamp(from: date)
-    }
-
     static func logBaseName(forMode mode: String) -> String {
         switch mode {
         case "audit":
@@ -123,7 +119,7 @@ enum UpdaterPaths {
     }
 
     static func logFile(forMode mode: String, at date: Date = Date(), pid: Int32? = nil) -> URL {
-        let stamp = frenchLogStamp(from: date)
+        let stamp = AlphaLagoonPaths.frenchLogStamp(from: date)
         let base = logBaseName(forMode: mode)
         let processId = pid ?? ProcessInfo.processInfo.processIdentifier
         return runsLogBase.appendingPathComponent("\(base)_\(stamp)_pid\(processId).log")
