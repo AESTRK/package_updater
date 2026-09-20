@@ -1,3 +1,4 @@
+import AlphaLagoonPaths
 import AppKit
 import Foundation
 
@@ -9,30 +10,24 @@ struct ProjectAttachmentProposal: Equatable {
 
 enum ProjectAttachmentCoordinator {
     static func parseProposals(from url: URL) -> [ProjectAttachmentProposal] {
-        guard let text = try? String(contentsOf: url, encoding: .utf8) else { return [] }
-        var packagesByProject: [String: [String]] = [:]
-
-        for line in text.split(whereSeparator: \.isNewline) {
-            let parts = line.split(separator: "\t", omittingEmptySubsequences: false).map(String.init)
-            guard parts.count >= 2, parts[0] != "project", !parts[0].isEmpty else { continue }
-            if parts.count >= 5, parts[4] == "venv_missing" {
-                continue
-            }
-            let project = parts[0]
-            let package = parts[1]
-            var list = packagesByProject[project, default: []]
-            if !list.contains(package) {
-                list.append(package)
-            }
-            packagesByProject[project] = list
+        guard FileManager.default.fileExists(atPath: url.path) else { return [] }
+        let text: String
+        do {
+            text = try String(contentsOf: url, encoding: .utf8)
+        } catch {
+            fputs("[package_updater] Audit TSV illisible (\(url.path)): \(error.localizedDescription)\n", stderr)
+            return []
         }
+        return parseProposalsTSV(text)
+    }
 
-        return packagesByProject.keys.sorted().map { project in
-            ProjectAttachmentProposal(
-                project: project,
-                packages: packagesByProject[project, default: []].sorted(),
-                referenceProject: referenceProject(for: project)
-            )
+    static func parseProposalsError(from url: URL) -> String? {
+        guard FileManager.default.fileExists(atPath: url.path) else { return nil }
+        do {
+            _ = try String(contentsOf: url, encoding: .utf8)
+            return nil
+        } catch {
+            return error.localizedDescription
         }
     }
 
@@ -44,9 +39,25 @@ enum ProjectAttachmentCoordinator {
         runner.beginManualOperation(title: "Découverte nouveaux projets…")
 
         let discoverScript = UpdaterPaths.discoverProjectAttachmentsScript
-        let discoverResult = ScriptProcessRunner.run(
-            script: discoverScript,
-            matrixURL: matrix.fileURL
+        var env = ProcessInfo.processInfo.environment
+        env["PACKAGE_UPDATER_ROOT"] = UpdaterPaths.repoRoot.path
+        env["INSTALLER_ROOT"] = UpdaterPaths.installerRoot.path
+        env["REQUIREMENTS_MATRIX"] = matrix.fileURL.path
+        env["LOG_BASE_DIR"] = UpdaterPaths.runsLogBase.path
+        AlphaLagoonShellEnvironment.applyAlphaLagoonRoots(
+            configDataDir: UpdaterPaths.configDataDir,
+            suiteRoot: UpdaterPaths.suiteRoot,
+            to: &env
+        )
+        AlphaLagoonShellEnvironment.applyTerminalDefaults(to: &env)
+        AlphaLagoonShellEnvironment.ensureHomebrewPath(in: &env)
+
+        let discoverResult = AlphaLagoonShellSyncRunner.run(
+            configuration: ShellRunConfiguration(
+                script: discoverScript,
+                workingDirectory: UpdaterPaths.repoRoot,
+                environment: env
+            )
         )
         runner.appendToLog(discoverResult.output)
         runner.endManualOperation(
@@ -57,8 +68,17 @@ enum ProjectAttachmentCoordinator {
 
         guard discoverResult.exitCode == 0 else { return }
 
-        let proposals = parseProposals(from: UpdaterPaths.auditMatrixAttachTSV)
-        let venvMissing = parseVenvMissingProjects(from: UpdaterPaths.auditMatrixAttachTSV)
+        let auditURL = UpdaterPaths.auditMatrixAttachTSV
+        if let parseError = parseProposalsError(from: auditURL) {
+            presentInfoAlert(
+                title: "Audit illisible",
+                message: "Le fichier \(auditURL.lastPathComponent) n'a pas pu être lu : \(parseError)"
+            )
+            return
+        }
+
+        let proposals = parseProposals(from: auditURL)
+        let venvMissing = parseVenvMissingProjects(from: auditURL)
 
         if proposals.isEmpty {
             if !venvMissing.isEmpty {
@@ -132,8 +152,41 @@ enum ProjectAttachmentCoordinator {
         alert.runModal()
     }
 
+    private static func parseProposalsTSV(_ text: String) -> [ProjectAttachmentProposal] {
+        var packagesByProject: [String: [String]] = [:]
+
+        for line in text.split(whereSeparator: \.isNewline) {
+            let parts = line.split(separator: "\t", omittingEmptySubsequences: false).map(String.init)
+            guard parts.count >= 2, parts[0] != "project", !parts[0].isEmpty else { continue }
+            if parts.count >= 5, parts[4] == "venv_missing" {
+                continue
+            }
+            let project = parts[0]
+            let package = parts[1]
+            var list = packagesByProject[project, default: []]
+            if !list.contains(package) {
+                list.append(package)
+            }
+            packagesByProject[project] = list
+        }
+
+        return packagesByProject.keys.sorted().map { project in
+            ProjectAttachmentProposal(
+                project: project,
+                packages: packagesByProject[project, default: []].sorted(),
+                referenceProject: referenceProject(for: project)
+            )
+        }
+    }
+
     private static func parseVenvMissingProjects(from url: URL) -> [String] {
-        guard let text = try? String(contentsOf: url, encoding: .utf8) else { return [] }
+        guard FileManager.default.fileExists(atPath: url.path) else { return [] }
+        let text: String
+        do {
+            text = try String(contentsOf: url, encoding: .utf8)
+        } catch {
+            return []
+        }
         var out: [String] = []
         for line in text.split(whereSeparator: \.isNewline) {
             let parts = line.split(separator: "\t", omittingEmptySubsequences: false).map(String.init)
@@ -150,46 +203,5 @@ enum ProjectAttachmentCoordinator {
     private static func referenceProject(for project: String) -> String? {
         guard project.contains("_rsi_") else { return nil }
         return project.replacingOccurrences(of: "_rsi_", with: "_ma_")
-    }
-}
-
-enum ScriptProcessRunner {
-    static func run(script: URL, matrixURL: URL, extraEnvironment: [String: String] = [:]) -> (exitCode: Int32, output: String) {
-        let proc = Process()
-        proc.executableURL = URL(fileURLWithPath: "/bin/bash")
-        proc.arguments = [script.path]
-        proc.currentDirectoryURL = UpdaterPaths.repoRoot
-
-        var env = ProcessInfo.processInfo.environment
-        env["PACKAGE_UPDATER_ROOT"] = UpdaterPaths.repoRoot.path
-        env["INSTALLER_ROOT"] = UpdaterPaths.installerRoot.path
-        env["REQUIREMENTS_MATRIX"] = matrixURL.path
-        env["ALPHA_LAGOON_CONFIG_ROOT"] = UpdaterPaths.configDataDir.path
-        env["LOG_BASE_DIR"] = UpdaterPaths.runsLogBase.path
-        env["ALPHA_LAGOON_ROOT"] = UpdaterPaths.suiteRoot.path
-        env["PYTHONUNBUFFERED"] = "1"
-        if env["PATH"] == nil || env["PATH"]?.contains("/opt/homebrew/bin") == false {
-            env["PATH"] = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
-                + (env["PATH"].map { ":\($0)" } ?? "")
-        }
-        for (key, value) in extraEnvironment {
-            env[key] = value
-        }
-        proc.environment = env
-
-        let pipe = Pipe()
-        proc.standardOutput = pipe
-        proc.standardError = pipe
-
-        do {
-            try proc.run()
-        } catch {
-            return (-1, "ERREUR lancement script: \(error.localizedDescription)\n")
-        }
-
-        proc.waitUntilExit()
-        let data = pipe.fileHandleForReading.readDataToEndOfFile()
-        let output = String(data: data, encoding: .utf8) ?? ""
-        return (proc.terminationStatus, output)
     }
 }

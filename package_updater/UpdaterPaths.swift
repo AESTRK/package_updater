@@ -125,33 +125,59 @@ enum UpdaterPaths {
         return runsLogBase.appendingPathComponent("\(base)_\(stamp)_pid\(processId).log")
     }
 
-    static func ensureLogsLayout() {
-        try? FileManager.default.createDirectory(
-            at: runsLogBase,
-            withIntermediateDirectories: true
-        )
+    @discardableResult
+    static func ensureLogsLayout() -> Bool {
+        do {
+            try FileManager.default.createDirectory(
+                at: runsLogBase,
+                withIntermediateDirectories: true
+            )
+            return true
+        } catch {
+            fputs("[package_updater] mkdir logs : \(error.localizedDescription)\n", stderr)
+            return false
+        }
     }
 
-    static func ensureHistoryLayout() {
-        try? FileManager.default.createDirectory(
-            at: matrixHistoryDirectory,
-            withIntermediateDirectories: true
-        )
+    @discardableResult
+    static func ensureHistoryLayout() -> Bool {
+        do {
+            try FileManager.default.createDirectory(
+                at: matrixHistoryDirectory,
+                withIntermediateDirectories: true
+            )
+            return true
+        } catch {
+            fputs("[package_updater] mkdir history : \(error.localizedDescription)\n", stderr)
+            return false
+        }
     }
 
-    static func archiveMatrixSnapshot(from source: URL? = nil) {
+    @discardableResult
+    static func archiveMatrixSnapshot(from source: URL? = nil) -> Bool {
         let src = source ?? requirementsMatrixURL
         let fm = FileManager.default
-        guard fm.fileExists(atPath: src.path) else { return }
+        guard fm.fileExists(atPath: src.path) else { return true }
 
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyyMMdd_HHmmss"
         let stamp = formatter.string(from: Date())
 
-        ensureHistoryLayout()
+        do {
+            try fm.createDirectory(at: matrixHistoryDirectory, withIntermediateDirectories: true)
+        } catch {
+            fputs("[package_updater] Backup matrice — mkdir history/ : \(error)\n", stderr)
+            return false
+        }
 
         let historyFile = matrixHistoryDirectory.appendingPathComponent("\(stamp)_\(matrixFileName)")
-        try? fm.copyItem(at: src, to: historyFile)
+        do {
+            try fm.copyItem(at: src, to: historyFile)
+            return true
+        } catch {
+            fputs("[package_updater] Backup matrice échoué : \(error.localizedDescription)\n", stderr)
+            return false
+        }
     }
 
     @discardableResult
@@ -165,11 +191,17 @@ enum UpdaterPaths {
             return target
         }
 
-        try? fm.createDirectory(
-            at: target.deletingLastPathComponent(),
-            withIntermediateDirectories: true
-        )
-        fm.createFile(atPath: target.path, contents: nil)
+        do {
+            try fm.createDirectory(
+                at: target.deletingLastPathComponent(),
+                withIntermediateDirectories: true
+            )
+        } catch {
+            fputs("[package_updater] mkdir matrice : \(error.localizedDescription)\n", stderr)
+        }
+        if !fm.createFile(atPath: target.path, contents: nil), !fm.fileExists(atPath: target.path) {
+            fputs("[package_updater] création matrice vide échouée : \(target.path)\n", stderr)
+        }
         return target
     }
 }

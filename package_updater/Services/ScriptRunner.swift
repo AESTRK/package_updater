@@ -80,7 +80,9 @@ final class ScriptRunner: ObservableObject {
 
         let runDate = Date()
         let logURL = UpdaterPaths.logFile(forMode: mode, at: runDate)
-        UpdaterPaths.ensureLogsLayout()
+        if !UpdaterPaths.ensureLogsLayout() {
+            append("ATTENTION : répertoire logs indisponible — \(UpdaterPaths.runsLogBase.path)\n\n")
+        }
         append("=== \(mode) ===\n\n")
 
         var env = ProcessInfo.processInfo.environment

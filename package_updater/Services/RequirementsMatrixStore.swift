@@ -35,9 +35,12 @@ final class RequirementsMatrixStore: ObservableObject {
             let dir = fileURL.deletingLastPathComponent()
             try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
             try text.write(to: fileURL, atomically: true, encoding: .utf8)
-            UpdaterPaths.archiveMatrixSnapshot(from: fileURL)
             isDirty = false
-            statusMessage = "Matrice enregistrée — snapshot dans history/"
+            if UpdaterPaths.archiveMatrixSnapshot(from: fileURL) {
+                statusMessage = "Matrice enregistrée — snapshot dans history/"
+            } else {
+                statusMessage = "Matrice enregistrée — backup history/ échoué"
+            }
             return true
         } catch {
             statusMessage = "Échec enregistrement : \(error.localizedDescription)"
