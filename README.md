@@ -14,6 +14,20 @@ Package SPM local **AlphaLagoonPaths** :
 
 Sibling de `package_updater/` — résolution de `config/generated/pip_matrix.txt`.
 
+**Signature Xcode** : le projet est en **manuel ad-hoc** (`Sign to Run Locally`, pas d’équipe Apple Developer). Schéma **package_updater** uniquement (pas le package **AlphaLagoonPaths** seul).
+
+**Erreurs « Missing package product » (AlphaLagoonPaths / AlphaLagoonAppKit)** : l’**installer** compile via `xcodebuild`, qui résout SwiftPM tout seul ; **Xcode GUI** est plus strict sur le package local sibling.
+
+1. **Quitter Xcode** (⌘Q) — une seule fenêtre / projet à la fois si possible (pas installer + package_updater en parallèle).
+2. Ouvrir via : `bash ~/XcodeProjects/package_updater/scripts/open-xcode.sh`  
+   (équivalent : `package_updater.xcworkspace`, pas double-clic sur le `.xcodeproj` seul).
+3. Si ça persiste : `bash ~/XcodeProjects/package_updater/scripts/refresh-xcode-spm.sh` puis rouvrir le workspace.
+4. Schéma **package_updater** → **Product → Clean Build Folder** → ⌘B.
+
+Le `.xcodeproj` embarque aussi `AlphaLagoonPaths` dans son workspace interne (depuis 2026-10-02) ; en cas de doute, préférez quand même le **`.xcworkspace`**.
+
+Alternative : **Recompiler Debug** depuis l’app **installer** (onglet Package Updater).
+
 Projet complémentaire : [**installer**](../installer) (clone Git, venv, build Rust, DMG launcher).
 
 ## Actions
