@@ -188,6 +188,32 @@ write_matrix_refresh_row() {
     "$project" "$pkg" "$spec" "$current" "$suggested" >>"$MATRIX_REFRESH_TSV"
 }
 
+# Une colonne : installée seule si à jour PyPI, sinon « installée → PyPI ».
+format_version_display() {
+  local current="$1" latest="$2" status="$3"
+  if [[ "$current" == "ABSENT" ]]; then
+    if [[ -z "$latest" || "$latest" == "N/A" ]]; then
+      echo "ABSENT"
+    else
+      echo "ABSENT (PyPI $latest)"
+    fi
+    return 0
+  fi
+  if [[ "$status" == "OK" ]]; then
+    echo "$current"
+    return 0
+  fi
+  if [[ "$status" == "UPDATE" && -n "$latest" && "$latest" != "N/A" ]]; then
+    echo "$current → $latest"
+    return 0
+  fi
+  if [[ -n "$latest" && "$latest" != "N/A" ]]; then
+    echo "$current / $latest"
+  else
+    echo "$current"
+  fi
+}
+
 pick_row_color() {
   local pypi_label="$1" matrix_label="$2"
   if [[ "$pypi_label" == "ABSENT" || "$matrix_label" == "MATRICE_SUPERIEURE" ]]; then
@@ -212,15 +238,15 @@ check_project_package_versions() {
   echo "[$project]"
 
   if [[ ! -x "$venv_python" ]]; then
-    printf "${RED}%-18s %-18s %-26s %-18s %-14s %-24s${RESET}\n" \
-      "Package" "Actuelle" "Cible matrice" "Dernière PyPI" "Statut PyPI" "Statut Matrice"
+    printf "${RED}%-18s %-24s %-26s %-14s %-24s${RESET}\n" \
+      "Package" "Version" "Cible matrice" "Statut PyPI" "Statut Matrice"
     if [[ -s "$requirements_file" ]]; then
-      printf "${YELLOW}%-18s %-18s %-26s %-18s %-14s %-24s${RESET}\n" \
-        "VENV_ABSENT" "ABSENT" "sur matrice" "N/A" "ERREUR" "VENV_A_INSTALLER"
+      printf "${YELLOW}%-18s %-24s %-26s %-14s %-24s${RESET}\n" \
+        "VENV_ABSENT" "ABSENT" "sur matrice" "ERREUR" "VENV_A_INSTALLER"
       echo "  → Installateur : Venv install (rebuild_all_venvs.sh). « Rattacher » ne crée pas le .venv."
     else
-      printf "${RED}%-18s %-18s %-26s %-18s %-14s %-24s${RESET}\n" \
-        "VENV_ABSENT" "ABSENT" "hors matrice" "N/A" "ERREUR" "RATTACHER_PROJET"
+      printf "${RED}%-18s %-24s %-26s %-14s %-24s${RESET}\n" \
+        "VENV_ABSENT" "ABSENT" "hors matrice" "ERREUR" "RATTACHER_PROJET"
       echo "  → Package Updater : « Rattacher nouveaux projets » puis Venv install."
     fi
     MATRIX_REFRESH_COUNT=$((MATRIX_REFRESH_COUNT + 0))
@@ -229,18 +255,18 @@ check_project_package_versions() {
   fi
 
   if [[ ! -s "$requirements_file" ]]; then
-    printf "${YELLOW}%-18s %-18s %-26s %-18s %-14s %-24s${RESET}\n" \
-      "AUCUNE_MATRICE" "N/A" "N/A" "N/A" "SANS_MATRICE" "SANS_MATRICE"
+    printf "${YELLOW}%-18s %-24s %-26s %-14s %-24s${RESET}\n" \
+      "AUCUNE_MATRICE" "N/A" "N/A" "SANS_MATRICE" "SANS_MATRICE"
     NO_MATRIX_COUNT=$((NO_MATRIX_COUNT + 1))
     return 0
   fi
 
-  printf "%-18s %-18s %-26s %-18s %-14s %-24s\n" \
-    "Package" "Actuelle" "Cible matrice" "Dernière PyPI" "Statut PyPI" "Statut Matrice"
-  printf "%-18s %-18s %-26s %-18s %-14s %-24s\n" \
-    "------------------" "------------------" "--------------------------" "------------------" "--------------" "------------------------"
+  printf "%-18s %-24s %-26s %-14s %-24s\n" \
+    "Package" "Version" "Cible matrice" "Statut PyPI" "Statut Matrice"
+  printf "%-18s %-24s %-26s %-14s %-24s\n" \
+    "------------------" "------------------------" "--------------------------" "--------------" "------------------------"
 
-  local spec pkg current latest status matrix_status pypi_label matrix_label color
+  local spec pkg current latest status matrix_status pypi_label matrix_label color version_col
   while IFS= read -r spec || [[ -n "$spec" ]]; do
     spec="$(echo "$spec" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
     [[ -z "$spec" ]] && continue
@@ -272,9 +298,10 @@ check_project_package_versions() {
     esac
 
     write_matrix_refresh_row "$project" "$pkg" "$spec" "$current" "$matrix_status"
+    version_col="$(format_version_display "$current" "$latest" "$status")"
     color="$(pick_row_color "$pypi_label" "$matrix_label")"
-    printf "${color}%-18s %-18s %-26s %-18s %-14s %-24s${RESET}\n" \
-      "$pkg" "$current" "$spec" "$latest" "$pypi_label" "$matrix_label"
+    printf "${color}%-18s %-24s %-26s %-14s %-24s${RESET}\n" \
+      "$pkg" "$version_col" "$spec" "$pypi_label" "$matrix_label"
   done <"$requirements_file"
 }
 
@@ -320,6 +347,7 @@ run_audit() {
 
   print_section "CHECK DES NOUVELLES VERSIONS PACKAGES"
   echo "Objectif : détail par appli + vérifier si la matrice minimale est en retard."
+  echo "Colonne Version : installée dans le .venv ; si PyPI plus récent → « installée → PyPI »."
   echo "Aucune mise à jour n'est appliquée par ce bloc."
   echo "Statut PyPI    : ${GREEN}A_JOUR${RESET} / ${YELLOW}A_CHECKER${RESET} / ${RED}ABSENT${RESET} / ${YELLOW}A_VERIFIER${RESET}"
   echo "Statut Matrice : ${GREEN}OK${RESET} / ${YELLOW}MATRICE_A_RAFRAICHIR${RESET} / ${RED}MATRICE_SUPERIEURE${RESET} / ${CYAN}LIBRE${RESET}"
