@@ -112,7 +112,8 @@ enum AnsiParser {
         var color = defaultColor
         if line.contains("MATRICE_SUPERIEURE") || line.contains(" ABSENT") || line.contains("VENV_ABSENT") {
             color = .systemRed
-        } else if line.contains("MATRICE_A_RAFRAICHIR") || line.contains("A_CHECKER") || line.contains("A_VERIFIER") {
+        } else if line.contains("MATRICE_A_RAFRAICHIR") || line.contains("MIN_A_REMONTER")
+            || line.contains("A_CHECKER") || line.contains("A_VERIFIER") {
             color = .systemYellow
         } else if line.contains(" SANS_MATRICE") || line.contains(" LIBRE") {
             color = .systemCyan

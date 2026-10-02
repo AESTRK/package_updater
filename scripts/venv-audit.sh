@@ -215,14 +215,14 @@ format_version_display() {
 }
 
 pick_row_color() {
-  local pypi_label="$1" matrix_label="$2"
-  if [[ "$pypi_label" == "ABSENT" || "$matrix_label" == "MATRICE_SUPERIEURE" ]]; then
+  local pypi_label="$1" matrix_status="$2"
+  if [[ "$pypi_label" == "ABSENT" || "$matrix_status" == "MATRICE_SUPERIEURE" ]]; then
     echo "$RED"
-  elif [[ "$pypi_label" == "A_CHECKER" || "$matrix_label" == "MATRICE_A_RAFRAICHIR" ]]; then
+  elif [[ "$pypi_label" == "A_CHECKER" || "$matrix_status" == "MATRICE_A_RAFRAICHIR" ]]; then
     echo "$YELLOW"
-  elif [[ "$pypi_label" == "A_VERIFIER" || "$matrix_label" == "A_VERIFIER" ]]; then
+  elif [[ "$pypi_label" == "A_VERIFIER" || "$matrix_status" == "A_VERIFIER" ]]; then
     echo "$YELLOW"
-  elif [[ "$matrix_label" == "LIBRE" ]]; then
+  elif [[ "$matrix_status" == "LIBRE" ]]; then
     echo "$CYAN"
   else
     echo "$GREEN"
@@ -291,15 +291,23 @@ check_project_package_versions() {
 
     case "$matrix_status" in
       OK) matrix_label="OK" ;;
-      MATRICE_A_RAFRAICHIR) matrix_label="MATRICE_A_RAFRAICHIR"; MATRIX_REFRESH_COUNT=$((MATRIX_REFRESH_COUNT + 1)) ;;
+      MATRICE_A_RAFRAICHIR)
+        matrix_label="MIN_A_REMONTER"
+        MATRIX_REFRESH_COUNT=$((MATRIX_REFRESH_COUNT + 1))
+        ;;
       MATRICE_SUPERIEURE) matrix_label="MATRICE_SUPERIEURE" ;;
       LIBRE) matrix_label="LIBRE" ;;
       *) matrix_label="A_VERIFIER" ;;
     esac
 
+    # PyPI à jour ≠ ligne verte si le >= matrice est en dessous de l'installé.
+    if [[ "$matrix_status" == "MATRICE_A_RAFRAICHIR" && "$pypi_label" == "A_JOUR" ]]; then
+      pypi_label="OK PyPI"
+    fi
+
     write_matrix_refresh_row "$project" "$pkg" "$spec" "$current" "$matrix_status"
     version_col="$(format_version_display "$current" "$latest" "$status")"
-    color="$(pick_row_color "$pypi_label" "$matrix_label")"
+    color="$(pick_row_color "$pypi_label" "$matrix_status")"
     printf "${color}%-18s %-24s %-26s %-14s %-24s${RESET}\n" \
       "$pkg" "$version_col" "$spec" "$pypi_label" "$matrix_label"
   done <"$requirements_file"
@@ -349,8 +357,9 @@ run_audit() {
   echo "Objectif : détail par appli + vérifier si la matrice minimale est en retard."
   echo "Colonne Version : installée dans le .venv ; si PyPI plus récent → « installée → PyPI »."
   echo "Aucune mise à jour n'est appliquée par ce bloc."
-  echo "Statut PyPI    : ${GREEN}A_JOUR${RESET} / ${YELLOW}A_CHECKER${RESET} / ${RED}ABSENT${RESET} / ${YELLOW}A_VERIFIER${RESET}"
-  echo "Statut Matrice : ${GREEN}OK${RESET} / ${YELLOW}MATRICE_A_RAFRAICHIR${RESET} / ${RED}MATRICE_SUPERIEURE${RESET} / ${CYAN}LIBRE${RESET}"
+  echo "Statut PyPI    : ${GREEN}A_JOUR${RESET} ou ${GREEN}OK PyPI${RESET} / ${YELLOW}A_CHECKER${RESET} / ${RED}ABSENT${RESET} / ${YELLOW}A_VERIFIER${RESET}"
+  echo "Statut Matrice : ${GREEN}OK${RESET} / ${YELLOW}MIN_A_REMONTER${RESET} (installé > minimum matrice) / ${RED}MATRICE_SUPERIEURE${RESET} / ${CYAN}LIBRE${RESET}"
+  echo "${YELLOW}Jaune${RESET} : souvent PyPI OK mais le >= dans requirements_matrix est trop bas — bouton « Mettre à jour matrice », pas un upgrade .venv."
   while IFS=$'\t' read -r project project_dir req_file; do
     [[ -n "$project" ]] || continue
     check_project_package_versions "$project" "$project_dir" "$req_file"
