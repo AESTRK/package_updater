@@ -6,6 +6,8 @@ Bundle : `io.aestrk.PackageUpdater`
 
 ## Prérequis build
 
+- **macOS 26+** — [`config_manager/docs/MACOS_DEPLOYMENT.md`](../config_manager/docs/MACOS_DEPLOYMENT.md)
+
 Package SPM local **AlphaLagoonPaths** :
 
 ```text
@@ -79,6 +81,7 @@ package_updater/
 
 ## Prérequis
 
+- macOS **26+** (aligné stack Xcode)
 - `config_manager` cloné avec `config/generated/pip_matrix.txt` (Sync stack dans Config Manager / installer)
 - Venvs Python sous `~/PycharmProjects/<app>/.venv`
 

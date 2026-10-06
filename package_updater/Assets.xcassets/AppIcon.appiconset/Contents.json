@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "AlphaLagoon_alpha_elegant_1024.png",
+      "filename" : "AlphaLagoon_alpha_light_pink_1024_compat.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -13,7 +13,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "AlphaLagoon_alpha_elegant_dark_1024.png",
+      "filename" : "icon_512x512@2x 1.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -25,7 +25,7 @@
           "value" : "tinted"
         }
       ],
-      "filename" : "AlphaLagoon_alpha_elegant_dark_1024 1.png",
+      "filename" : "icon_512x512@2x 2.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"

@@ -114,16 +114,18 @@ final class ScriptRunner: ObservableObject {
         shellRunner.run(
             configuration: config,
             onOutput: { [weak self] chunk in
-                self?.append(chunk)
+                Task { @MainActor [weak self] in self?.append(chunk) }
             },
             onComplete: { [weak self] code in
-                guard let self else { return }
-                self.isRunning = false
-                self.lastExitCode = code
-                self.statusMessage = code == 0 ? "Terminé (OK)" : "Terminé (code \(code))"
-                self.append("\n--- \(self.statusMessage) ---\n")
-                self.onComplete?(code)
-                self.onComplete = nil
+                Task { @MainActor [weak self] in
+                    guard let self else { return }
+                    isRunning = false
+                    lastExitCode = code
+                    statusMessage = code == 0 ? "Terminé (OK)" : "Terminé (code \(code))"
+                    append("\n--- \(statusMessage) ---\n")
+                    self.onComplete?(code)
+                    self.onComplete = nil
+                }
             }
         )
     }
