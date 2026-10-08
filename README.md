@@ -28,7 +28,7 @@ Sibling de `package_updater/` — résolution de `config/generated/pip_matrix.tx
 
 Le `.xcodeproj` embarque aussi `AlphaLagoonPaths` dans son workspace interne (depuis 2026-10-02) ; en cas de doute, préférez quand même le **`.xcworkspace`**.
 
-Alternative : **Recompiler Debug** depuis l’app **installer** (onglet Package Updater).
+Alternative : **installer** → onglet **Package Updater**, ou hub **DEBUG · RELEASE** (**Recompiler Debug** / **Release** / **Recompiler tout** pour les 6 apps).
 
 Projet complémentaire : [**installer**](../installer) (clone Git, venv, build Rust, DMG launcher).
 
