@@ -122,7 +122,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			packageReferences = (
-				ALPATHPKGREF0001 /* XCLocalSwiftPackageReference "../AlphaLagoonPaths" */,
+				ALPATHPKGREF0001 /* XCRemoteSwiftPackageReference "alphlagoonpaths" */,
 			);
 			targets = (
 				A1PKUPBA2FCA1EA700362D27 /* package_updater */,
@@ -374,22 +374,26 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		ALPATHPKGREF0001 /* XCLocalSwiftPackageReference "../AlphaLagoonPaths" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ../AlphaLagoonPaths;
+/* Begin XCRemoteSwiftPackageReference section */
+		ALPATHPKGREF0001 /* XCRemoteSwiftPackageReference "alphlagoonpaths" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AESTRK/AlphaLagoonPaths.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
 		};
-/* End XCLocalSwiftPackageReference section */
+/* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		ALPATHPKGDEP0001 /* AlphaLagoonPaths */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = ALPATHPKGREF0001 /* XCLocalSwiftPackageReference "../AlphaLagoonPaths" */;
+			package = ALPATHPKGREF0001 /* XCRemoteSwiftPackageReference "alphlagoonpaths" */;
 			productName = AlphaLagoonPaths;
 		};
 		ALPATHPKGDEP0002 /* AlphaLagoonAppKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = ALPATHPKGREF0001 /* XCLocalSwiftPackageReference "../AlphaLagoonPaths" */;
+			package = ALPATHPKGREF0001 /* XCRemoteSwiftPackageReference "alphlagoonpaths" */;
 			productName = AlphaLagoonAppKit;
 		};
 /* End XCSwiftPackageProductDependency section */

@@ -8,25 +8,11 @@ Bundle : `io.aestrk.PackageUpdater`
 
 - **macOS 26+** — [`config_manager/docs/MACOS_DEPLOYMENT.md`](../config_manager/docs/MACOS_DEPLOYMENT.md)
 
-Package SPM local **AlphaLagoonPaths** :
+**AlphaLagoonPaths** (SPM Git + clone de travail) : [`installer/docs/ALPHLAGOON_PATHS_SPM.md`](../installer/docs/ALPHLAGOON_PATHS_SPM.md) — le projet Xcode dépend de `github.com/AESTRK/AlphaLagoonPaths` (`main`) ; le dossier `~/XcodeProjects/AlphaLagoonPaths` sert à **éditer** le package (push → Update Package Versions).
 
-```text
-~/XcodeProjects/AlphaLagoonPaths
-```
+**Signature Xcode** : **manuel ad-hoc** (`Sign to Run Locally`). Schéma **package_updater** uniquement.
 
-Sibling de `package_updater/` — résolution de `config/generated/pip_matrix.txt`.
-
-**Signature Xcode** : le projet est en **manuel ad-hoc** (`Sign to Run Locally`, pas d’équipe Apple Developer). Schéma **package_updater** uniquement (pas le package **AlphaLagoonPaths** seul).
-
-**Erreurs « Missing package product » (AlphaLagoonPaths / AlphaLagoonAppKit)** : l’**installer** compile via `xcodebuild`, qui résout SwiftPM tout seul ; **Xcode GUI** est plus strict sur le package local sibling.
-
-1. **Quitter Xcode** (⌘Q) — une seule fenêtre / projet à la fois si possible (pas installer + package_updater en parallèle).
-2. Ouvrir via : `bash ~/XcodeProjects/package_updater/scripts/open-xcode.sh`  
-   (équivalent : `package_updater.xcworkspace`, pas double-clic sur le `.xcodeproj` seul).
-3. Si ça persiste : `bash ~/XcodeProjects/package_updater/scripts/refresh-xcode-spm.sh` puis rouvrir le workspace.
-4. Schéma **package_updater** → **Product → Clean Build Folder** → ⌘B.
-
-Le `.xcodeproj` embarque aussi `AlphaLagoonPaths` dans son workspace interne (depuis 2026-10-02) ; en cas de doute, préférez quand même le **`.xcworkspace`**.
+Ouvrir : `bash scripts/open-xcode.sh` ou `package_updater.xcodeproj`. Workspace stack optionnel : [`STACK_XCODE_WORKSPACE.md`](../installer/docs/STACK_XCODE_WORKSPACE.md). Dépannage SPM : `bash ~/XcodeProjects/installer/scripts/refresh-all-stack-xcode-spm.sh`.
 
 Alternative : **installer** → onglet **Package Updater**, ou hub **DEBUG · RELEASE** (**Recompiler Debug** / **Release** / **Recompiler tout** pour les 6 apps).
 

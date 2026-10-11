@@ -1,0 +1,15 @@
+{
+  "originHash" : "5b5d6c4b21df08f08e237e8d7e5ff5541ff3b1554a6325dcaab682c2ba17821e",
+  "pins" : [
+    {
+      "identity" : "alphalagoonpaths",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/AESTRK/AlphaLagoonPaths.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "32c1ba81d979c354a4e28a876da39db5f304783e"
+      }
+    }
+  ],
+  "version" : 3
+}
