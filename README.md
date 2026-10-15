@@ -14,7 +14,7 @@ Bundle : `io.aestrk.PackageUpdater`
 
 Ouvrir : `bash scripts/open-xcode.sh` ou `package_updater.xcodeproj`. Workspace stack optionnel : [`STACK_XCODE_WORKSPACE.md`](../installer/docs/STACK_XCODE_WORKSPACE.md). Dépannage SPM : `bash ~/XcodeProjects/installer/scripts/refresh-all-stack-xcode-spm.sh`.
 
-Alternative : **installer** → onglet **Package Updater**, ou hub **DEBUG · RELEASE** (**Recompiler Debug** / **Release** / **Recompiler tout** pour les 6 apps).
+Alternative : **installer** → onglet **Package Updater**, ou hub **DEBUG · RELEASE** (**Recompiler Debug** / **Release** / **Recompiler tout** — grille **7 apps** hub ; `package_updater` y figure).
 
 Projet complémentaire : [**installer**](../installer) (clone Git, venv, build Rust, DMG launcher).
 
