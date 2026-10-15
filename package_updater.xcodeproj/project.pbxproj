@@ -101,7 +101,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2650;
-				LastUpgradeCheck = 2650;
+				LastUpgradeCheck = 2700;
 				TargetAttributes = {
 					A1PKUPBA2FCA1EA700362D27 = {
 						CreatedOnToolsVersion = 26.5;
@@ -118,13 +118,13 @@
 			);
 			mainGroup = A1PKUPB22FCA1EA700362D27;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				ALPATHPKGREF0001 /* XCRemoteSwiftPackageReference "AlphaLagoonPaths" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A1PKUPBC2FCA1EA700362D27 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
-			packageReferences = (
-				ALPATHPKGREF0001 /* XCRemoteSwiftPackageReference "alphlagoonpaths" */,
-			);
 			targets = (
 				A1PKUPBA2FCA1EA700362D27 /* package_updater */,
 			);
@@ -177,6 +177,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -205,8 +206,12 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -230,9 +235,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
-				CODE_SIGN_IDENTITY = "-";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -243,6 +246,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -271,8 +275,12 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -289,9 +297,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
-				CODE_SIGN_IDENTITY = "-";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 			};
 			name = Release;
@@ -305,6 +311,7 @@
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -344,6 +351,7 @@
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -398,7 +406,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		ALPATHPKGREF0001 /* XCRemoteSwiftPackageReference "alphlagoonpaths" */ = {
+		ALPATHPKGREF0001 /* XCRemoteSwiftPackageReference "AlphaLagoonPaths" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/AESTRK/AlphaLagoonPaths.git";
 			requirement = {
@@ -411,12 +419,12 @@
 /* Begin XCSwiftPackageProductDependency section */
 		ALPATHPKGDEP0001 /* AlphaLagoonPaths */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = ALPATHPKGREF0001 /* XCRemoteSwiftPackageReference "alphlagoonpaths" */;
+			package = ALPATHPKGREF0001 /* XCRemoteSwiftPackageReference "AlphaLagoonPaths" */;
 			productName = AlphaLagoonPaths;
 		};
 		ALPATHPKGDEP0002 /* AlphaLagoonAppKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = ALPATHPKGREF0001 /* XCRemoteSwiftPackageReference "alphlagoonpaths" */;
+			package = ALPATHPKGREF0001 /* XCRemoteSwiftPackageReference "AlphaLagoonPaths" */;
 			productName = AlphaLagoonAppKit;
 		};
 /* End XCSwiftPackageProductDependency section */
