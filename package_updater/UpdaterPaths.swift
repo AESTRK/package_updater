@@ -2,6 +2,13 @@ import AlphaLagoonPaths
 import Foundation
 
 enum UpdaterPaths {
+    private static let archiveMatrixStampFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyyMMdd_HHmmss"
+        return formatter
+    }()
+
     static let projectName = "package_updater"
     static let matrixFileName = "pip_matrix.txt"
 
@@ -159,9 +166,7 @@ enum UpdaterPaths {
         let fm = FileManager.default
         guard fm.fileExists(atPath: src.path) else { return true }
 
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyyMMdd_HHmmss"
-        let stamp = formatter.string(from: Date())
+        let stamp = archiveMatrixStampFormatter.string(from: Date())
 
         do {
             try fm.createDirectory(at: matrixHistoryDirectory, withIntermediateDirectories: true)
