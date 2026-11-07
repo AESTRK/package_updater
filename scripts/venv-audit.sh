@@ -315,15 +315,15 @@ check_project_package_versions() {
 
 # PyO3 / maturin — absent de pip_matrix.txt ; requis pour les GUIs backtest / stress test.
 BACKTEST_GUI_VENVS=(
-  "algo_ma_crossover_backtest_gui"
-  "algo_rsi_crossover_backtest_gui"
-  "algo_ma_stress_test"
+  "algo_ma_crossover_backtest_python"
+  "algo_rsi_crossover_backtest_python"
+  "algo_ma_stress_test_python"
 )
 NATIVE_EXT_MISSING=0
 
 audit_native_backtest_extensions() {
   print_section "EXTENSIONS NATIVES (hors pip / matrice)"
-  echo "Les backtests Python utilisent algo_backtest_rust (Rust + maturin), pas un wheel PyPI."
+  echo "Les backtests Python utilisent algo_backtest (Rust + maturin), pas un wheel PyPI."
   echo "Recréer le .venv (pip) ne suffit pas sans build_backtest_extensions."
   echo ""
   local gui venv py missing=0
@@ -334,20 +334,20 @@ audit_native_backtest_extensions() {
       missing=$((missing + 1))
       continue
     fi
-    if "$venv" -c "import algo_backtest_rust" >/dev/null 2>&1; then
-      printf "${GREEN}%-36s OK (import algo_backtest_rust)${RESET}\n" "[$gui]"
+    if "$venv" -c "import algo_backtest" >/dev/null 2>&1; then
+      printf "${GREEN}%-36s OK (import algo_backtest)${RESET}\n" "[$gui]"
     else
-      printf "${RED}%-36s ABSENT (algo_backtest_rust)${RESET}\n" "[$gui]"
+      printf "${RED}%-36s ABSENT (algo_backtest)${RESET}\n" "[$gui]"
       missing=$((missing + 1))
     fi
   done
   NATIVE_EXT_MISSING=$missing
   echo ""
   if [[ "$missing" -gt 0 ]]; then
-    log_warn "$missing venv(s) sans algo_backtest_rust — les GUIs ne démarreront pas depuis le launcher."
+    log_warn "$missing venv(s) sans algo_backtest — les GUIs ne démarreront pas depuis le launcher."
     echo "Correctif (installateur Python « .venv · recréer · Tout » inclut l’étape, ou manuel) :"
     echo "  bash \"\$HOME/XcodeProjects/installer/scripts/build_backtest_extensions.sh\""
-    echo "  # ou : cd ~/RustroverProjects/algo_backtest_rust && bash scripts/build_python_extension.sh"
+    echo "  # ou : cd ~/RustroverProjects/algo_backtest && bash scripts/build_python_extension.sh"
   else
     log_ok "Extensions backtest présentes dans les .venv concernés."
   fi
@@ -397,7 +397,7 @@ run_audit() {
   echo "Objectif : détail par appli + vérifier si la matrice minimale est en retard."
   echo "Colonne Version : installée dans le .venv ; si PyPI plus récent → « installée → PyPI »."
   echo "Aucune mise à jour n'est appliquée par ce bloc."
-  echo "Hors scope ici : algo_backtest_rust (voir bloc « EXTENSIONS NATIVES » en fin d'audit)."
+  echo "Hors scope ici : algo_backtest (voir bloc « EXTENSIONS NATIVES » en fin d'audit)."
   echo "Statut PyPI    : ${GREEN}A_JOUR${RESET} ou ${GREEN}OK PyPI${RESET} / ${YELLOW}A_CHECKER${RESET} / ${RED}ABSENT${RESET} / ${YELLOW}A_VERIFIER${RESET}"
   echo "Statut Matrice : ${GREEN}OK${RESET} / ${YELLOW}MIN_A_REMONTER${RESET} (installé > minimum matrice) / ${RED}MATRICE_SUPERIEURE${RESET} / ${CYAN}LIBRE${RESET}"
   echo "${YELLOW}Jaune${RESET} : souvent PyPI OK mais le >= dans requirements_matrix est trop bas — bouton « Mettre à jour matrice », pas un upgrade .venv."
