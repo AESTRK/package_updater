@@ -28,7 +28,7 @@ enum UpdaterPaths {
     static let suiteRoot: URL = AlphaLagoonPaths.suiteRoot()
 
     static var xcodeProjectsLogRoot: URL {
-        suiteRoot.appendingPathComponent("_logs_XcodeProjects", isDirectory: true)
+        AlphaLagoonPaths.xcodeLogsRoot()
     }
 
     static var configDataDir: URL {
